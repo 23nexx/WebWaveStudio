@@ -259,8 +259,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================
-   REVEAL ON SCROLL (stagger)
-============================ */
+     REVEAL ON SCROLL (stagger)
+  ============================ */
   const revealTargets = Array.from(
     document.querySelectorAll(
       ".service-card, .pricing-card, .pricing-addon-inner, .portfolio-card, .about-side .card, .contact-options a, .about-reveal, .about-reveal-card"
@@ -329,8 +329,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================
-   PORTFOLIO TABS (filtrar cards)
-============================ */
+     PORTFOLIO TABS (filtrar cards)
+  ============================ */
   (() => {
     const tabBtns = Array.from(document.querySelectorAll(".tab-btn"));
     const grid = document.getElementById("portfolio-grid");
@@ -349,16 +349,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const applyFilter = (filter) => {
-      // esconde o texto "Escolhe uma categoria..."
       if (placeholder) placeholder.style.display = "none";
 
       let visible = 0;
 
       cards.forEach((card) => {
-        const cat = card.dataset.category; // data-category="restauracao" etc
+        const cat = card.dataset.category;
         const show = filter === "all" ? true : cat === filter;
-
-        // NÃO uses display:flex aqui; usa hidden para não “rebentar” layout
         card.hidden = !show;
         if (show) visible++;
       });
@@ -366,7 +363,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (emptyMsg) emptyMsg.hidden = visible !== 0;
     };
 
-    // estado inicial: mostra "Todos" (ou se preferires, tudo escondido)
     const initial =
       tabBtns.find((b) => b.dataset.filter === "all") || tabBtns[0];
     setActive(initial);
@@ -394,7 +390,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const prevBtn = document.querySelector("[data-viewer-prev]");
   const nextBtn = document.querySelector("[data-viewer-next]");
 
-  // Conteúdos por categoria (por agora: só tens restauracao real)
+  // ✅ KEYS têm de bater com data-open-portfolio do HTML
+  // ✅ PATHS têm de bater com as pastas reais (com pontos)
   const DEMOS = {
     restauracao: {
       title: "Restaurante & Cafés — Sabor & Fogo",
@@ -414,9 +411,38 @@ document.addEventListener("DOMContentLoaded", () => {
         },
       ],
     },
+
     ecommerce: {
       title: "E-commerce — Noise District",
       slides: [{ type: "video", src: "assets.ecom/noise-district.mp4" }],
+    },
+
+    saas: {
+      title: "SaaS — Demo",
+      slides: [{ type: "video", src: "assets.saas/saas.mp4" }],
+    },
+
+    // 🔥 hotel no teu HTML é "alojamento" e a pasta real é assets.tripnest
+    alojamento: {
+      title: "Alojamento Local / Hotel — TripNest",
+      slides: [
+        { type: "video", src: "assets.tripnest/TripNest.mp4" },
+        { type: "image", src: "assets.tripnest/TripNest.png" },
+      ],
+    },
+
+    estetica: {
+      title: "Estética — Demo",
+      slides: [{ type: "video", src: "assets.estetica/Emera.mp4" }],
+    },
+
+    // (opcional) se quiseres manter compatibilidade com keys antigas
+    hoteis: {
+      title: "Alojamento Local / Hotel — TripNest",
+      slides: [
+        { type: "video", src: "assets.tripnest/TripNest.mp4" },
+        { type: "image", src: "assets.tripnest/TripNest.png" },
+      ],
     },
   };
 
@@ -431,8 +457,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const destroyStageMedia = () => {
     if (!stage) return;
     const vid = stage.querySelector("video");
-    if (vid) vid.pause();
+    if (vid) {
+      vid.pause();
+      vid.removeAttribute("src");
+      vid.load();
+    }
     stage.innerHTML = "";
+  };
+
+  const showMediaError = (msg) => {
+    if (!stage) return;
+    stage.innerHTML = `<div class="viewer-empty">
+      <p><strong>Não deu para carregar a demo.</strong></p>
+      <p style="opacity:.85">${escapeHTML(msg)}</p>
+      <p style="opacity:.75">Abre o DevTools → Network e confirma se o ficheiro está a dar 200 (não 404).</p>
+    </div>`;
+    if (counter) counter.textContent = `1 / 1`;
+    if (prevBtn) prevBtn.disabled = true;
+    if (nextBtn) nextBtn.disabled = true;
   };
 
   const renderSlide = () => {
@@ -444,13 +486,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const slide = currentSlides[currentIndex];
 
     if (!slide) {
-      stage.innerHTML = `<div class="viewer-empty">
-        <p><strong>Demo em breve.</strong></p>
-        <p>Por agora, este template ainda não tem vídeo/screenshots.</p>
-      </div>`;
-      if (counter) counter.textContent = `1 / 1`;
-      if (prevBtn) prevBtn.disabled = true;
-      if (nextBtn) nextBtn.disabled = true;
+      showMediaError("Esta categoria não tem slides configurados no JS.");
       return;
     }
 
@@ -459,21 +495,31 @@ document.addEventListener("DOMContentLoaded", () => {
       v.className = "viewer-media";
       v.controls = true;
       v.autoplay = true;
-      v.muted = true; // obrigatório para autoplay em muitos browsers
+      v.muted = true; // necessário para autoplay
       v.loop = true;
       v.playsInline = true;
       v.preload = "metadata";
       v.src = slide.src;
+
+      v.addEventListener("error", () => {
+        showMediaError(`Erro no vídeo: ${slide.src}`);
+      });
+
       stage.appendChild(v);
 
-      // força play (às vezes autoplay não pega no modal)
-      v.play().catch(() => {});
+      // força play (Safari pode falhar se não estiver muted/inline)
+      v.play().catch(() => {
+        // se falhar autoplay, pelo menos mostra controls para o user clicar play
+      });
     } else {
       const img = document.createElement("img");
       img.className = "viewer-media";
       img.src = slide.src;
       img.alt = "Screenshot do template";
       img.loading = "lazy";
+      img.addEventListener("error", () => {
+        showMediaError(`Erro na imagem: ${slide.src}`);
+      });
       stage.appendChild(img);
     }
 
@@ -485,17 +531,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const openModal = (key) => {
     if (!modal) return;
 
-    const data = DEMOS[key];
-    if (titleEl) titleEl.textContent = data?.title || "Demo";
+    const safeKey = String(key || "").trim();
+    const data = DEMOS[safeKey];
 
-    currentSlides = data?.slides || [];
+    if (!data) {
+      // isto é o teu “Demo em breve” — mas agora diz-te o erro real
+      currentSlides = [];
+      currentIndex = 0;
+      if (titleEl) titleEl.textContent = "Demo";
+      modal.hidden = false;
+      lockScroll(true);
+      showMediaError(
+        `Não existe DEMOS["${safeKey}"]. O teu data-open-portfolio está errado.`
+      );
+      return;
+    }
+
+    if (titleEl) titleEl.textContent = data.title || "Demo";
+    currentSlides = data.slides || [];
     currentIndex = 0;
 
     modal.hidden = false;
     lockScroll(true);
     renderSlide();
 
-    // foco para teclado
     if (nextBtn) nextBtn.focus();
   };
 
@@ -537,11 +596,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "ArrowRight") goNext();
   });
 
-  // Thumb video: SEM loop, e garantir que para no fim (alguns browsers tentam reiniciar)
+  // Thumb videos: deixa loop no HTML (preview fica vivo).
+  // Se queres mesmo parar no fim, ok — mas isso mata o loop.
+  // Eu deixava loop ON no thumb. Vou só garantir playsinline/muted.
   document.querySelectorAll(".portfolio-thumb-video").forEach((v) => {
-    v.loop = false;
-    v.addEventListener("ended", () => {
-      v.pause();
-    });
+    v.muted = true;
+    v.playsInline = true;
   });
 });

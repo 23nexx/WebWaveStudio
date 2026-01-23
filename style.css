@@ -41,7 +41,6 @@ img,
 video {
   display: block;
   max-width: 100%;
-  height: auto;
 }
 
 /* Links base */
@@ -614,7 +613,6 @@ p {
   gap: 1.8rem;
 }
 
-/* Garantia: portfolio usa grid-3 */
 .portfolio-grid {
   align-items: stretch;
 }
@@ -715,7 +713,6 @@ p {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Add-on */
 .pricing-addon {
   grid-column: 1 / -1;
   margin-top: 2.4rem;
@@ -794,7 +791,10 @@ p {
   background-position: center;
 }
 
+/* FIX: vídeo a preencher sempre o thumb (sem barras) */
 .portfolio-thumb-video {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1113,33 +1113,63 @@ button.portfolio-link {
   align-items: start;
 }
 
+.about-card {
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 22px;
+  padding: 2rem;
+  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.08);
+}
+
 .about-lead {
+  max-width: 70ch;
   font-size: 1.02rem;
   line-height: 1.65;
   color: rgba(15, 23, 42, 0.72);
 }
 
 .about-subtitle {
-  margin-top: 1.1rem;
+  margin-top: 1.2rem;
+  margin-bottom: 0.6rem;
   font-size: 1.05rem;
 }
 
+.about-split {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 1.4rem;
+  margin-top: 1.2rem;
+  align-items: start;
+}
+
+.about-main,
+.about-ocean-panel {
+  min-width: 0;
+}
+
 .about-bullets {
-  margin: 0.75rem 0 1.1rem;
   padding-left: 1.1rem;
+  margin: 0.5rem 0 0 0;
 }
 
 .about-bullets li {
-  color: rgba(15, 23, 42, 0.72);
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
 }
 
 .about-callout {
   margin-top: 1rem;
-  padding: 0.95rem 1rem;
+  padding: 1rem 1.1rem;
   border-radius: 14px;
-  border: 1px solid rgba(6, 182, 212, 0.28);
-  background: rgba(224, 250, 255, 0.55);
-  color: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  background: rgba(6, 182, 212, 0.08);
+  color: rgba(15, 23, 42, 0.85);
+}
+
+@media (max-width: 880px) {
+  .about-split {
+    grid-template-columns: 1fr;
+  }
 }
 
 .contact-options {
@@ -1176,65 +1206,6 @@ button.portfolio-link {
 }
 
 /* ============================
-   SOBRE (sem vídeo / card normal)
-============================ */
-
-.about-card {
-  background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  border-radius: 22px;
-  padding: 2rem;
-  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.08);
-}
-
-.about-lead {
-  max-width: 70ch;
-}
-
-.about-split {
-  display: grid;
-  grid-template-columns: 1.55fr 1fr;
-  gap: 1.4rem;
-  margin-top: 1.2rem;
-  align-items: start;
-}
-
-.about-main,
-.about-ocean-panel {
-  min-width: 0;
-}
-
-.about-subtitle {
-  margin-top: 1.2rem;
-  margin-bottom: 0.6rem;
-}
-
-.about-bullets {
-  padding-left: 1.1rem;
-  margin: 0.5rem 0 0 0;
-}
-
-.about-bullets li {
-  color: var(--text-muted);
-  margin-bottom: 0.4rem;
-}
-
-.about-callout {
-  margin-top: 1rem;
-  padding: 1rem 1.1rem;
-  border-radius: 14px;
-  border: 1px solid rgba(6, 182, 212, 0.25);
-  background: rgba(6, 182, 212, 0.08);
-  color: rgba(15, 23, 42, 0.85);
-}
-
-@media (max-width: 880px) {
-  .about-split {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ============================
    OCEAN PANEL (Como trabalhamos)
 ============================ */
 
@@ -1242,7 +1213,6 @@ button.portfolio-link {
   position: relative;
   border-radius: 18px;
   padding: 1.1rem 1.1rem 1.2rem;
-
   border: 1px solid rgba(6, 182, 212, 0.28);
   background: radial-gradient(
       circle at 25% 15%,
@@ -1879,8 +1849,7 @@ button.portfolio-link {
   .portfolio-card,
   .mockup,
   .hero-card,
-  .reveal,
-  .contact-icon-btn {
+  .reveal {
     transition: none !important;
   }
 

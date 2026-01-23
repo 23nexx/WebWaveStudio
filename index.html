@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt">
   <head>
     <meta charset="UTF-8" />
@@ -50,7 +50,6 @@
     <!-- HERO -->
     <section class="hero">
       <div class="container hero-inner">
-        <!-- Coluna esquerda -->
         <div class="hero-content">
           <p class="eyebrow">Websites & Automação</p>
 
@@ -83,14 +82,10 @@
           </div>
         </div>
 
-        <!-- Coluna direita -->
         <div class="hero-card">
           <div class="hero-card-header">
             <h2>Website para Barbearia</h2>
-            <p>
-              Landing page centrada em marcações, reviews e apresentação de
-              serviços.
-            </p>
+            <p>Landing page centrada, reviews e apresentação de serviços.</p>
           </div>
 
           <div class="hero-card-body">
@@ -322,9 +317,9 @@
             class="tab-btn"
             role="tab"
             aria-selected="false"
-            data-filter="imobiliaria"
+            data-filter="alojamento"
           >
-            Imobiliária
+            Alojamento Local / AirBNB / Hotel
           </button>
         </div>
 
@@ -334,7 +329,19 @@
 
         <div class="grid-3 portfolio-grid" id="portfolio-grid">
           <article class="card portfolio-card" data-category="servicos">
-            <div class="portfolio-thumb thumb-services"></div>
+            <div class="portfolio-thumb">
+              <video
+                class="portfolio-thumb-video"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+              >
+                <source src="assets.lumiworks/LumiWorks.mp4" type="video/mp4" />
+              </video>
+            </div>
+
             <div class="portfolio-body">
               <div class="portfolio-meta">
                 <span class="tag">Landing de Serviços</span>
@@ -358,7 +365,18 @@
           </article>
 
           <article class="card portfolio-card" data-category="saas">
-            <div class="portfolio-thumb thumb-saas"></div>
+            <div class="portfolio-thumb">
+              <video
+                class="portfolio-thumb-video"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+              >
+                <source src="assets.saas/saas.mp4" type="video/mp4" />
+              </video>
+            </div>
             <div class="portfolio-body">
               <div class="portfolio-meta">
                 <span class="tag">Startup / SaaS</span>
@@ -378,7 +396,6 @@
             </div>
           </article>
 
-          <!-- E-COMMERCE — VIDEO thumb -->
           <article class="card portfolio-card" data-category="ecommerce">
             <div class="portfolio-thumb">
               <video
@@ -388,10 +405,9 @@
                 loop
                 playsinline
                 preload="metadata"
-                src="assets/ecomm/noise-district.mp4"
+                src="assets.ecom/noise-district.mp4"
               ></video>
             </div>
-
             <div class="portfolio-body">
               <div class="portfolio-meta">
                 <span class="tag">E-commerce</span>
@@ -411,7 +427,6 @@
             </div>
           </article>
 
-          <!-- RESTAURAÇÃO — VIDEO thumb -->
           <article class="card portfolio-card" data-category="restauracao">
             <div class="portfolio-thumb">
               <video
@@ -421,17 +436,15 @@
                 loop
                 playsinline
                 preload="metadata"
-                src="assets/rest/Rest.VID.mp4"
+                src="assets.rest/Rest.VID.mp4"
               ></video>
             </div>
-
             <div class="portfolio-body">
               <div class="portfolio-meta">
                 <span class="tag">Restaurante & Cafés</span>
                 <span class="pill">Menu</span>
               </div>
               <p>Menu, reservas, pratos em destaque e mapa/horário.</p>
-
               <div class="portfolio-actions">
                 <a class="portfolio-link" href="#contacto">Quero este estilo</a>
                 <button
@@ -467,7 +480,19 @@
           </article>
 
           <article class="card portfolio-card" data-category="estetica">
-            <div class="portfolio-thumb thumb-estetica"></div>
+            <div class="portfolio-thumb">
+              <video
+                class="portfolio-thumb-video"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+              >
+                <source src="assets.estetica/Emera.mp4" type="video/mp4" />
+              </video>
+            </div>
+
             <div class="portfolio-body">
               <div class="portfolio-meta">
                 <span class="tag">Estética / Clínica</span>
@@ -487,20 +512,34 @@
             </div>
           </article>
 
-          <article class="card portfolio-card" data-category="imobiliaria">
-            <div class="portfolio-thumb thumb-imobiliaria"></div>
+          <article class="card portfolio-card" data-category="alojamento">
+            <div class="portfolio-thumb">
+              <video
+                class="portfolio-thumb-video"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+              >
+                <source src="assets.tripnest/TripNest.mp4" type="video/mp4" />
+              </video>
+            </div>
+
             <div class="portfolio-body">
               <div class="portfolio-meta">
-                <span class="tag">Imobiliária</span>
-                <span class="pill">Listagens</span>
+                <span class="tag">Alojamento Local / AirBNB / Hotel</span>
+                <span class="pill">Reservas</span>
               </div>
-              <p>Cards de imóveis, destaque, “filtros” UI e contacto rápido.</p>
+
+              <p>Galeria, comodidades, reviews e CTA para reserva/contacto.</p>
+
               <div class="portfolio-actions">
                 <a class="portfolio-link" href="#contacto">Quero este estilo</a>
                 <button
                   class="portfolio-link ghost"
                   type="button"
-                  data-open-portfolio="imobiliaria"
+                  data-open-portfolio="alojamento"
                 >
                   Ver demo
                 </button>
@@ -528,12 +567,11 @@
       </div>
     </section>
 
-    <!-- SOBRE (sem vídeo / sem background) -->
+    <!-- SOBRE -->
     <section class="section" id="sobre">
       <div class="container">
         <div class="about-card">
           <p class="eyebrow">Sobre nós</p>
-
           <h2>Estúdio pequeno, foco total no detalhe.</h2>
 
           <p class="about-lead">
@@ -585,26 +623,26 @@
 
               <ul class="ocean-steps">
                 <li>
-                  <span class="step-icon" aria-hidden="true">✓</span
-                  ><span
+                  <span class="step-icon" aria-hidden="true">✓</span>
+                  <span
                     ><strong>Reunião rápida</strong> para entender o
                     negócio</span
                   >
                 </li>
                 <li>
-                  <span class="step-icon" aria-hidden="true">✓</span
-                  ><span><strong>Primeira versão</strong> em até 72 horas</span>
+                  <span class="step-icon" aria-hidden="true">✓</span>
+                  <span><strong>Primeira versão</strong> em até 72 horas</span>
                 </li>
                 <li>
-                  <span class="step-icon" aria-hidden="true">✓</span
-                  ><span
+                  <span class="step-icon" aria-hidden="true">✓</span>
+                  <span
                     ><strong>Revisões claras</strong> baseadas no teu
                     feedback</span
                   >
                 </li>
                 <li>
-                  <span class="step-icon" aria-hidden="true">✓</span
-                  ><span><strong>Publicação</strong> + próximos passos</span>
+                  <span class="step-icon" aria-hidden="true">✓</span>
+                  <span><strong>Publicação</strong> + próximos passos</span>
                 </li>
               </ul>
 
@@ -771,7 +809,7 @@
       </div>
     </footer>
 
-    <!-- PORTFOLIO MODAL (carrossel) -->
+    <!-- PORTFOLIO MODAL -->
     <div class="portfolio-modal" id="portfolio-modal" hidden>
       <div class="portfolio-modal-backdrop" data-close-portfolio></div>
 
