@@ -1,33 +1,46 @@
-/* ============================
-   WebWave Studio — script.js
-============================ */
+(() => {
+  "use strict";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const prefersReducedMotion =
-    window.matchMedia &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-  const canHover =
-    window.matchMedia && window.matchMedia("(hover: hover)").matches;
+  const mm = (q) => (window.matchMedia ? window.matchMedia(q).matches : false);
+  const prefersReducedMotion = mm("(prefers-reduced-motion: reduce)");
+  const canHover = mm("(hover: hover)");
+
+  // ✅ mete false quando já não precisares
+  const DEBUG = false;
+  const log = (...a) => DEBUG && console.log("[WebWave]", ...a);
+  const warn = (...a) => DEBUG && console.warn("[WebWave]", ...a);
+
+  document.addEventListener("DOMContentLoaded", () => {
+    initMobileNav();
+    initFooterYear();
+    initReviews();
+    initMetricCount();
+    initRevealOnScroll();
+    initHeroCardTilt();
+    initPortfolioTabs();
+    initPortfolioModal();
+    initBinaryWave(); // só corre se existir #bw-track
+  });
 
   /* ============================
      MOBILE NAV
   ============================ */
-  const navToggle = document.getElementById("nav-toggle");
-  const navLinks = document.getElementById("nav-links");
+  function initMobileNav() {
+    const navToggle = $("#nav-toggle");
+    const navLinks = $("#nav-links");
+    if (!navToggle || !navLinks) return;
 
-  if (navToggle && navLinks) {
     navToggle.setAttribute("aria-expanded", "false");
 
     navToggle.addEventListener("click", () => {
-      navLinks.classList.toggle("open");
-      navToggle.setAttribute(
-        "aria-expanded",
-        navLinks.classList.contains("open") ? "true" : "false"
-      );
+      const isOpen = navLinks.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
     });
 
-    navLinks.querySelectorAll("a").forEach((a) => {
+    $$("a", navLinks).forEach((a) => {
       a.addEventListener("click", () => {
         navLinks.classList.remove("open");
         navToggle.setAttribute("aria-expanded", "false");
@@ -36,9 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener("click", (e) => {
       if (!navLinks.classList.contains("open")) return;
-      const clickedInside =
+      const inside =
         navLinks.contains(e.target) || navToggle.contains(e.target);
-      if (!clickedInside) {
+      if (!inside) {
         navLinks.classList.remove("open");
         navToggle.setAttribute("aria-expanded", "false");
       }
@@ -48,559 +61,525 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ============================
      FOOTER YEAR
   ============================ */
-  const yearEl = document.getElementById("year");
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-  /* ============================
-     REVIEWS (render + loop)
-  ============================ */
-  const reviews = [
-    {
-      text: "“Processo rápido, comunicação clara e resultado final impecável.”",
-      author: "— Filipe Rocha",
-      stars: 5,
-    },
-    {
-      text: "“O site ficou moderno e leve. Notámos mais contactos logo na primeira semana.”",
-      author: "— Marta Silva",
-      stars: 5,
-    },
-    {
-      text: "“A estrutura ficou bem organizada e o design transmite confiança.”",
-      author: "— Luís Monteiro",
-      stars: 5,
-    },
-    {
-      text: "“Foram diretos ao ponto e entregaram exatamente o que pedimos.”",
-      author: "— Ana Pereira",
-      stars: 5,
-    },
-    {
-      text: "“Excelente atenção ao detalhe. O texto ficou muito mais profissional.”",
-      author: "— Ricardo Santos",
-      stars: 5,
-    },
-    {
-      text: "“Rápidos nas revisões e sempre disponíveis para ajustar.”",
-      author: "— Joana Almeida",
-      stars: 5,
-    },
-    {
-      text: "“O nosso WhatsApp começou a receber mais pedidos depois do novo site.”",
-      author: "— Tiago Martins",
-      stars: 5,
-    },
-    {
-      text: "“Design limpo e ótima experiência no telemóvel.”",
-      author: "— Catarina Costa",
-      stars: 5,
-    },
-    {
-      text: "“Explicaram tudo com clareza e trataram da publicação sem stress.”",
-      author: "— Bruno Ferreira",
-      stars: 5,
-    },
-    {
-      text: "“Parecia uma empresa grande a fazer o projeto. Muito acima do esperado.”",
-      author: "— Inês Lopes",
-      stars: 5,
-    },
-    {
-      text: "“Ficou tudo mais simples para os clientes marcarem e perceberem os serviços.”",
-      author: "— Pedro Ribeiro",
-      stars: 5,
-    },
-    {
-      text: "“O site carrega rápido e ficou mesmo com aspeto premium.”",
-      author: "— Sofia Neves",
-      stars: 5,
-    },
-    {
-      text: "“Ótimo gosto no design. O branding ficou mais consistente.”",
-      author: "— Miguel Carvalho",
-      stars: 5,
-    },
-    {
-      text: "“Organização perfeita das secções. Agora está tudo mais profissional.”",
-      author: "— Daniela Gomes",
-      stars: 5,
-    },
-    {
-      text: "“Ajudaram-nos a escolher o melhor texto e a chamada para ação.”",
-      author: "— Hugo Correia",
-      stars: 5,
-    },
-    {
-      text: "“Suporte pós-entrega excelente. Ajustaram detalhes rapidamente.”",
-      author: "— Beatriz Rocha",
-      stars: 5,
-    },
-    {
-      text: "“Trabalho limpo e objetivo. Era exatamente o que precisávamos.”",
-      author: "— André Sousa",
-      stars: 5,
-    },
-    {
-      text: "“O design ficou alinhado com o nosso negócio. Site super fluido.”",
-      author: "— Mariana Duarte",
-      stars: 5,
-    },
-    {
-      text: "“Prazos curtos sem perder qualidade. Muito bons.”",
-      author: "— Nuno Mendes",
-      stars: 5,
-    },
-    {
-      text: "“Recomendamos: entrega rápida e comunicação fácil.”",
-      author: "— Lara Fernandes",
-      stars: 5,
-    },
-  ];
-
-  const track = document.getElementById("review-track");
-
-  const escapeHTML = (str) =>
-    String(str)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-
-  const renderStars = (count) => {
-    let html = "";
-    for (let i = 1; i <= 5; i++) {
-      html += `<span class="star ${i <= count ? "filled" : ""}">★</span>`;
-    }
-    return html;
-  };
-
-  const buildReviewCard = ({ text, author, stars }) => `
-    <div class="card review-card">
-      <p class="review-text">${escapeHTML(text)}</p>
-      <p class="review-author">${escapeHTML(author)}</p>
-      <div class="review-stars">${renderStars(stars)}</div>
-    </div>
-  `;
-
-  if (track) {
-    const base = reviews.map(buildReviewCard).join("");
-    if (prefersReducedMotion) {
-      track.style.animation = "none";
-      track.innerHTML = base;
-    } else {
-      track.innerHTML = base + base;
-    }
+  function initFooterYear() {
+    const yearEl = $("#year");
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
   }
 
   /* ============================
-     METRIC COUNT (+100)
+     REVIEWS
   ============================ */
-  const metricEl = document.getElementById("metric-clientes");
-  const targetValue = 100;
-  const duration = 3200;
+  function initReviews() {
+    const reviewTrack = $("#review-track");
+    if (!reviewTrack) return;
 
-  let rafId = null;
-  let isAnimating = false;
+    const reviews = [
+      {
+        text: "“Processo rápido, comunicação clara e resultado final impecável.”",
+        author: "— Filipe Rocha",
+        stars: 5,
+      },
+      {
+        text: "“O site ficou moderno e leve. Notámos mais contactos logo na primeira semana.”",
+        author: "— Marta Silva",
+        stars: 5,
+      },
+      {
+        text: "“Design limpo e ótima experiência no telemóvel.”",
+        author: "— Catarina Costa",
+        stars: 5,
+      },
+      {
+        text: "“Muito acima do esperado. Trabalho profissional.”",
+        author: "— Inês Lopes",
+        stars: 5,
+      },
+    ];
 
-  const setMetric = (v) => {
+    const renderStars = (n) =>
+      Array.from({ length: 5 }, (_, i) => {
+        const filled = i < n ? "filled" : "";
+        return `<span class="star ${filled}">★</span>`;
+      }).join("");
+
+    const cards = reviews
+      .map(
+        (r) => `
+          <div class="card review-card">
+            <p class="review-text">${r.text}</p>
+            <p class="review-author">${r.author}</p>
+            <div class="review-stars">${renderStars(r.stars)}</div>
+          </div>
+        `,
+      )
+      .join("");
+
+    reviewTrack.innerHTML = prefersReducedMotion ? cards : cards + cards;
+  }
+
+  /* ============================
+     METRIC COUNT
+  ============================ */
+  function initMetricCount() {
+    const metricEl = $("#metric-clientes");
     if (!metricEl) return;
-    metricEl.textContent = `+${v}`;
-  };
 
-  const stopAnimation = () => {
-    if (rafId) cancelAnimationFrame(rafId);
-    rafId = null;
-    isAnimating = false;
-  };
+    const target = 100;
+    const duration = 2500;
 
-  const animateCount = () => {
-    if (!metricEl) return;
+    let raf = null;
+    let start = null;
 
-    if (prefersReducedMotion) {
-      setMetric(targetValue);
-      return;
-    }
-    if (isAnimating) return;
-
-    stopAnimation();
-    isAnimating = true;
-
-    const startTime = performance.now();
-
-    const tick = (now) => {
-      const progress = Math.min((now - startTime) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const value = Math.floor(targetValue * eased);
-      setMetric(value);
-
-      if (progress < 1) rafId = requestAnimationFrame(tick);
-      else isAnimating = false;
+    const setValue = (v) => {
+      metricEl.textContent = `+${v}`;
     };
 
-    rafId = requestAnimationFrame(tick);
-  };
+    const stop = () => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = null;
+      start = null;
+    };
 
-  if (metricEl) {
-    setMetric(0);
-    const metricObserver = new IntersectionObserver(
+    const animate = (ts) => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      const value = Math.floor(progress * target);
+      setValue(value);
+      if (progress < 1) raf = requestAnimationFrame(animate);
+    };
+
+    setValue(0);
+
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (!e) return;
+        if (e.isIntersecting) {
+          stop();
+          raf = requestAnimationFrame(animate);
+        } else {
+          stop();
+          setValue(0);
+        }
+      },
+      { threshold: 0.6 },
+    );
+
+    obs.observe(metricEl);
+  }
+
+  /* ============================
+     REVEAL ON SCROLL
+  ============================ */
+  function initRevealOnScroll() {
+    const revealEls = $$(".service-card, .portfolio-card, .contact-options a");
+    if (!revealEls.length) return;
+
+    if (prefersReducedMotion) {
+      revealEls.forEach((el) => el.classList.add("is-visible"));
+      return;
+    }
+
+    const io = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) animateCount();
-          else {
-            stopAnimation();
-            setMetric(0);
-          }
+        entries.forEach((e) => {
+          if (e.isIntersecting) e.target.classList.add("is-visible");
+          else e.target.classList.remove("is-visible");
         });
       },
-      { threshold: 0.6 }
+      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
     );
-    metricObserver.observe(metricEl);
+
+    revealEls.forEach((el, i) => {
+      el.classList.add("reveal");
+      el.style.setProperty("--delay", `${(i % 6) * 70}ms`);
+      io.observe(el);
+    });
+
+    const heroCard = $(".hero-card");
+    if (heroCard) {
+      heroCard.classList.add("reveal");
+      heroCard.style.setProperty("--delay", `120ms`);
+      io.observe(heroCard);
+    }
   }
 
   /* ============================
-     REVEAL ON SCROLL (stagger)
+     HERO CARD TILT
   ============================ */
-  const revealTargets = Array.from(
-    document.querySelectorAll(
-      ".service-card, .pricing-card, .pricing-addon-inner, .portfolio-card, .about-side .card, .contact-options a, .about-reveal, .about-reveal-card"
-    )
-  );
+  function initHeroCardTilt() {
+    const heroCard = $(".hero-card");
+    if (!heroCard || prefersReducedMotion || !canHover) return;
 
-  revealTargets.forEach((el, i) => {
-    el.classList.add("reveal");
-    el.style.setProperty("--delay", `${(i % 6) * 70}ms`);
-  });
-
-  if (revealTargets.length) {
-    if (prefersReducedMotion) {
-      revealTargets.forEach((el) => el.classList.add("is-visible"));
-    } else {
-      const revealObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) entry.target.classList.add("is-visible");
-            else entry.target.classList.remove("is-visible");
-          });
-        },
-        { threshold: 0.15, rootMargin: "0px 0px -10% 0px" }
+    heroCard.addEventListener("mousemove", (e) => {
+      const r = heroCard.getBoundingClientRect();
+      heroCard.style.setProperty(
+        "--mx",
+        `${((e.clientX - r.left) / r.width) * 100}%`,
       );
-      revealTargets.forEach((el) => revealObserver.observe(el));
-    }
-  }
-
-  /* ============================
-     HERO MOCKUP REVEAL + glow follow
-  ============================ */
-  const heroCard = document.querySelector(".hero-card");
-
-  if (heroCard) {
-    if (prefersReducedMotion) {
-      heroCard.classList.add("is-visible");
-    } else {
-      const heroObserver = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) heroCard.classList.add("is-visible");
-          else heroCard.classList.remove("is-visible");
-        },
-        { threshold: 0.4 }
+      heroCard.style.setProperty(
+        "--my",
+        `${((e.clientY - r.top) / r.height) * 100}%`,
       );
-      heroObserver.observe(heroCard);
-    }
+    });
 
-    if (!prefersReducedMotion && canHover) {
-      heroCard.addEventListener("mousemove", (e) => {
-        const r = heroCard.getBoundingClientRect();
-        heroCard.style.setProperty(
-          "--mx",
-          `${((e.clientX - r.left) / r.width) * 100}%`
-        );
-        heroCard.style.setProperty(
-          "--my",
-          `${((e.clientY - r.top) / r.height) * 100}%`
-        );
-      });
-
-      heroCard.addEventListener("mouseleave", () => {
-        heroCard.style.removeProperty("--mx");
-        heroCard.style.removeProperty("--my");
-      });
-    }
+    heroCard.addEventListener("mouseleave", () => {
+      heroCard.style.removeProperty("--mx");
+      heroCard.style.removeProperty("--my");
+    });
   }
 
   /* ============================
-     PORTFOLIO TABS (filtrar cards)
+     PORTFOLIO TABS
   ============================ */
-  (() => {
-    const tabBtns = Array.from(document.querySelectorAll(".tab-btn"));
-    const grid = document.getElementById("portfolio-grid");
-    const placeholder = document.getElementById("portfolio-placeholder");
-    const emptyMsg = document.getElementById("portfolio-empty");
-
-    if (!tabBtns.length || !grid) return;
-
-    const cards = Array.from(grid.querySelectorAll(".portfolio-card"));
+  function initPortfolioTabs() {
+    const tabs = $$(".tab-btn");
+    const cards = $$(".portfolio-card");
+    if (!tabs.length || !cards.length) return;
 
     const setActive = (btn) => {
-      tabBtns.forEach((b) => {
-        b.classList.toggle("is-active", b === btn);
-        b.setAttribute("aria-selected", b === btn ? "true" : "false");
+      tabs.forEach((b) => b.classList.toggle("is-active", b === btn));
+      tabs.forEach((b) =>
+        b.setAttribute("aria-selected", b === btn ? "true" : "false"),
+      );
+    };
+
+    const apply = (filter) => {
+      cards.forEach((c) => {
+        c.hidden = filter !== "all" && c.dataset.category !== filter;
       });
     };
 
-    const applyFilter = (filter) => {
-      if (placeholder) placeholder.style.display = "none";
-
-      let visible = 0;
-
-      cards.forEach((card) => {
-        const cat = card.dataset.category;
-        const show = filter === "all" ? true : cat === filter;
-        card.hidden = !show;
-        if (show) visible++;
-      });
-
-      if (emptyMsg) emptyMsg.hidden = visible !== 0;
-    };
-
-    const initial =
-      tabBtns.find((b) => b.dataset.filter === "all") || tabBtns[0];
+    const initial = tabs.find((t) => t.dataset.filter === "all") || tabs[0];
     setActive(initial);
-    applyFilter(initial.dataset.filter || "all");
+    apply(initial.dataset.filter || "all");
 
-    tabBtns.forEach((btn) => {
+    tabs.forEach((btn) => {
       btn.addEventListener("click", () => {
-        const filter = btn.dataset.filter || "all";
         setActive(btn);
-        applyFilter(filter);
+        apply(btn.dataset.filter || "all");
       });
     });
-  })();
+  }
 
   /* ============================
-     PORTFOLIO MODAL (Carrossel)
+     PORTFOLIO MODAL (fix final)
   ============================ */
-  const modal = document.getElementById("portfolio-modal");
-  const openBtns = document.querySelectorAll("[data-open-portfolio]");
-  const closeEls = document.querySelectorAll("[data-close-portfolio]");
+  function initPortfolioModal() {
+    const modal = $("#portfolio-modal");
+    const titleEl = $("#portfolio-modal-title");
+    const stage = $("#viewer-stage");
+    const counter = $("#viewer-counter");
+    const prevBtn = $("[data-viewer-prev]");
+    const nextBtn = $("[data-viewer-next]");
 
-  const titleEl = document.getElementById("portfolio-modal-title");
-  const stage = document.getElementById("viewer-stage");
-  const counter = document.getElementById("viewer-counter");
-  const prevBtn = document.querySelector("[data-viewer-prev]");
-  const nextBtn = document.querySelector("[data-viewer-next]");
-
-  // ✅ KEYS têm de bater com data-open-portfolio do HTML
-  // ✅ PATHS têm de bater com as pastas reais (com pontos)
-  const DEMOS = {
-    restauracao: {
-      title: "Restaurante & Cafés — Sabor & Fogo",
-      slides: [
-        { type: "video", src: "assets.rest/Rest.VID.mp4" },
-        {
-          type: "image",
-          src: "assets.rest/Screenshot 2025-12-15 at 19.16.27.png",
-        },
-        {
-          type: "image",
-          src: "assets.rest/Screenshot 2025-12-15 at 19.17.08.png",
-        },
-        {
-          type: "image",
-          src: "assets.rest/Screenshot 2025-12-15 at 19.17.51.png",
-        },
-      ],
-    },
-
-    ecommerce: {
-      title: "E-commerce — Noise District",
-      slides: [{ type: "video", src: "assets.ecom/noise-district.mp4" }],
-    },
-
-    saas: {
-      title: "SaaS — Demo",
-      slides: [{ type: "video", src: "assets.saas/saas.mp4" }],
-    },
-
-    // 🔥 hotel no teu HTML é "alojamento" e a pasta real é assets.tripnest
-    alojamento: {
-      title: "Alojamento Local / Hotel — TripNest",
-      slides: [
-        { type: "video", src: "assets.tripnest/TripNest.mp4" },
-        { type: "image", src: "assets.tripnest/TripNest.png" },
-      ],
-    },
-
-    estetica: {
-      title: "Estética — Demo",
-      slides: [{ type: "video", src: "assets.estetica/Emera.mp4" }],
-    },
-
-    // (opcional) se quiseres manter compatibilidade com keys antigas
-    hoteis: {
-      title: "Alojamento Local / Hotel — TripNest",
-      slides: [
-        { type: "video", src: "assets.tripnest/TripNest.mp4" },
-        { type: "image", src: "assets.tripnest/TripNest.png" },
-      ],
-    },
-  };
-
-  let currentSlides = [];
-  let currentIndex = 0;
-
-  const lockScroll = (lock) => {
-    document.documentElement.style.overflow = lock ? "hidden" : "";
-    document.body.style.overflow = lock ? "hidden" : "";
-  };
-
-  const destroyStageMedia = () => {
-    if (!stage) return;
-    const vid = stage.querySelector("video");
-    if (vid) {
-      vid.pause();
-      vid.removeAttribute("src");
-      vid.load();
-    }
-    stage.innerHTML = "";
-  };
-
-  const showMediaError = (msg) => {
-    if (!stage) return;
-    stage.innerHTML = `<div class="viewer-empty">
-      <p><strong>Não deu para carregar a demo.</strong></p>
-      <p style="opacity:.85">${escapeHTML(msg)}</p>
-      <p style="opacity:.75">Abre o DevTools → Network e confirma se o ficheiro está a dar 200 (não 404).</p>
-    </div>`;
-    if (counter) counter.textContent = `1 / 1`;
-    if (prevBtn) prevBtn.disabled = true;
-    if (nextBtn) nextBtn.disabled = true;
-  };
-
-  const renderSlide = () => {
-    if (!stage) return;
-
-    destroyStageMedia();
-
-    const total = currentSlides.length || 1;
-    const slide = currentSlides[currentIndex];
-
-    if (!slide) {
-      showMediaError("Esta categoria não tem slides configurados no JS.");
+    if (!modal || !stage || !counter || !prevBtn || !nextBtn) {
+      warn("Modal missing elements", {
+        modal,
+        stage,
+        counter,
+        prevBtn,
+        nextBtn,
+      });
       return;
     }
 
-    if (slide.type === "video") {
-      const v = document.createElement("video");
-      v.className = "viewer-media";
-      v.controls = true;
-      v.autoplay = true;
-      v.muted = true; // necessário para autoplay
-      v.loop = true;
-      v.playsInline = true;
-      v.preload = "metadata";
-      v.src = slide.src;
+    // ⚠️ GitHub Pages é case-sensitive. Se uma pasta/vídeo estiver com nome diferente -> 404.
+    const DEMOS = {
+      servicos: {
+        title: "Landing de Serviços — LumiWorks",
+        slides: [{ type: "video", src: "assets.lumiworks/LumiWorks.mp4" }],
+      },
+      saas: {
+        title: "Startup / SaaS",
+        slides: [{ type: "video", src: "assets.saas/saas.mp4" }],
+      },
+      ecommerce: {
+        title: "E-commerce — Noise District",
+        slides: [{ type: "video", src: "assets.ecom/noise-district.mp4" }],
+      },
+      restauracao: {
+        title: "Restaurante & Cafés",
+        slides: [{ type: "video", src: "assets.rest/Rest.VID.mp4" }],
+      },
+      barbearia: {
+        title: "Website de Barbearia — Craft",
+        slides: [
+          { type: "video", src: "assets.Barber/CraftClient.mp4" },
+          { type: "video", src: "assets.Barber/CraftBarber.mp4" },
+        ],
+      },
+      estetica: {
+        title: "Estética / Clínica — Emera",
+        slides: [{ type: "video", src: "assets.estetica/Emera.mp4" }],
+      },
+      alojamento: {
+        title: "Alojamento Local — TripNest",
+        slides: [{ type: "video", src: "assets.tripnest/TripNest.mp4" }],
+      },
+    };
 
-      v.addEventListener("error", () => {
-        showMediaError(`Erro no vídeo: ${slide.src}`);
-      });
+    let slides = [];
+    let index = 0;
 
-      stage.appendChild(v);
+    const lockScroll = (lock) => {
+      document.documentElement.style.overflow = lock ? "hidden" : "";
+      document.body.style.overflow = lock ? "hidden" : "";
+    };
 
-      // força play (Safari pode falhar se não estiver muted/inline)
-      v.play().catch(() => {
-        // se falhar autoplay, pelo menos mostra controls para o user clicar play
-      });
-    } else {
-      const img = document.createElement("img");
-      img.className = "viewer-media";
-      img.src = slide.src;
-      img.alt = "Screenshot do template";
-      img.loading = "lazy";
-      img.addEventListener("error", () => {
-        showMediaError(`Erro na imagem: ${slide.src}`);
-      });
-      stage.appendChild(img);
-    }
+    const destroyStage = () => {
+      const v = $("video", stage);
+      if (v) {
+        try {
+          v.pause();
+        } catch (_) {}
+        v.removeAttribute("src");
+        v.load();
+      }
+      stage.innerHTML = "";
+    };
 
-    if (counter) counter.textContent = `${currentIndex + 1} / ${total}`;
-    if (prevBtn) prevBtn.disabled = currentIndex === 0;
-    if (nextBtn) nextBtn.disabled = currentIndex === total - 1;
-  };
+    const showError = (msg) => {
+      destroyStage();
+      stage.innerHTML = `<div class="viewer-empty">
+        <p><strong>Não deu para carregar a demo.</strong></p>
+        <p style="opacity:.85">${String(msg)}</p>
+      </div>`;
+      counter.textContent = "0 / 0";
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+    };
 
-  const openModal = (key) => {
-    if (!modal) return;
+    const render = () => {
+      destroyStage();
 
-    const safeKey = String(key || "").trim();
-    const data = DEMOS[safeKey];
+      const s = slides[index];
+      if (!s) {
+        showError("Sem slides configurados para esta demo.");
+        return;
+      }
 
-    if (!data) {
-      // isto é o teu “Demo em breve” — mas agora diz-te o erro real
-      currentSlides = [];
-      currentIndex = 0;
-      if (titleEl) titleEl.textContent = "Demo";
+      if (s.type === "video") {
+        const v = document.createElement("video");
+        v.className = "viewer-media";
+        v.src = s.src;
+        v.controls = true;
+        v.autoplay = true;
+        v.muted = true;
+        v.loop = true;
+        v.playsInline = true;
+        v.preload = "metadata";
+
+        v.addEventListener("error", () => {
+          showError(`Erro/404 no vídeo: ${s.src}`);
+        });
+
+        stage.appendChild(v);
+        v.play().catch(() => {});
+      } else {
+        const img = document.createElement("img");
+        img.className = "viewer-media";
+        img.src = s.src;
+        img.alt = "Demo";
+
+        img.addEventListener("error", () => {
+          showError(`Erro/404 na imagem: ${s.src}`);
+        });
+
+        stage.appendChild(img);
+      }
+
+      counter.textContent = `${index + 1} / ${slides.length}`;
+      prevBtn.disabled = index === 0;
+      nextBtn.disabled = index === slides.length - 1;
+    };
+
+    const openModal = (key) => {
+      const k = String(key || "").trim();
+      const cfg = DEMOS[k];
+
+      if (!cfg) {
+        modal.hidden = false;
+        modal.removeAttribute("hidden");
+        lockScroll(true);
+        if (titleEl) titleEl.textContent = "Demo";
+        showError(
+          `Não existe DEMOS["${k}"]. O data-open-portfolio não bate com as keys.`,
+        );
+        return;
+      }
+
+      slides = Array.isArray(cfg.slides) ? cfg.slides : [];
+      index = 0;
+
+      if (titleEl) titleEl.textContent = cfg.title || "Demo";
+
       modal.hidden = false;
+      modal.removeAttribute("hidden");
       lockScroll(true);
-      showMediaError(
-        `Não existe DEMOS["${safeKey}"]. O teu data-open-portfolio está errado.`
-      );
-      return;
+
+      render();
+    };
+
+    const closeModal = () => {
+      destroyStage();
+      modal.hidden = true;
+      modal.setAttribute("hidden", "");
+      lockScroll(false);
+    };
+
+    // ✅ Delegation: abre/fecha sem depender de binds em cada botão
+    document.addEventListener(
+      "click",
+      (e) => {
+        const openBtn = e.target.closest("[data-open-portfolio]");
+        if (openBtn) {
+          e.preventDefault();
+          openModal(openBtn.getAttribute("data-open-portfolio"));
+          return;
+        }
+
+        const closeBtn = e.target.closest("[data-close-portfolio]");
+        if (closeBtn) {
+          e.preventDefault();
+          closeModal();
+        }
+      },
+      true,
+    );
+
+    prevBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (index > 0) {
+        index -= 1;
+        render();
+      }
+    });
+
+    nextBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (index < slides.length - 1) {
+        index += 1;
+        render();
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (modal.hidden) return;
+      if (e.key === "Escape") closeModal();
+      if (e.key === "ArrowLeft" && index > 0) {
+        index -= 1;
+        render();
+      }
+      if (e.key === "ArrowRight" && index < slides.length - 1) {
+        index += 1;
+        render();
+      }
+    });
+
+    log("Portfolio modal ready. Keys:", Object.keys(DEMOS));
+  }
+
+  /* ============================
+     HERO — DIGITAL RAIN (#bw-track)
+     (no teu HTML atual não existe, por isso não faz nada)
+  ============================ */
+  function initBinaryWave() {
+    const track = $("#bw-track");
+    if (!track) return;
+
+    const COLS = 22;
+    const LEN = 240;
+    const randBit = () => (Math.random() > 0.5 ? "1" : "0");
+
+    track.innerHTML = "";
+
+    for (let i = 0; i < COLS; i++) {
+      const col = document.createElement("span");
+      col.className = "bw-col";
+
+      let s = "";
+      for (let j = 0; j < LEN; j++) s += randBit();
+      col.textContent = s;
+
+      col.style.animationDelay = `${-(Math.random() * 10).toFixed(2)}s`;
+      col.style.animationDuration = `${(7 + Math.random() * 8).toFixed(2)}s`;
+      col.style.opacity = (0.35 + Math.random() * 0.55).toFixed(2);
+
+      track.appendChild(col);
     }
 
-    if (titleEl) titleEl.textContent = data.title || "Demo";
-    currentSlides = data.slides || [];
-    currentIndex = 0;
+    if (prefersReducedMotion) return;
 
-    modal.hidden = false;
-    lockScroll(true);
-    renderSlide();
+    setInterval(() => {
+      const cols = track.children;
+      for (let i = 0; i < cols.length; i++) {
+        if (Math.random() < 0.22) {
+          const t = cols[i].textContent;
+          if (!t || t.length < 5) continue;
+          const k = (Math.random() * t.length) | 0;
+          cols[i].textContent =
+            t.slice(0, k) + (t[k] === "1" ? "0" : "1") + t.slice(k + 1);
+        }
+      }
+    }, 180);
+  }
 
-    if (nextBtn) nextBtn.focus();
-  };
+  function initBinaryWave() {
+    const container = document.querySelector(".hero-binarywave");
+    if (!container) return;
 
-  const closeModal = () => {
-    if (!modal) return;
-    destroyStageMedia();
-    modal.hidden = true;
-    lockScroll(false);
-  };
+    const layers = Array.from(container.querySelectorAll(".rain"));
+    if (!layers.length) return;
 
-  const goPrev = () => {
-    if (currentIndex <= 0) return;
-    currentIndex -= 1;
-    renderSlide();
-  };
+    const COLS = 22; // nº de colunas
+    const ROWS = 70; // nº de bits por coluna (ajusta)
+    const randBit = () => (Math.random() > 0.5 ? "1" : "0");
 
-  const goNext = () => {
-    if (currentIndex >= currentSlides.length - 1) return;
-    currentIndex += 1;
-    renderSlide();
-  };
+    // limpa e gera colunas por layer
+    layers.forEach((layer, layerIndex) => {
+      layer.innerHTML = "";
 
-  openBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const key = btn.getAttribute("data-open-portfolio") || "";
-      openModal(key);
+      for (let i = 0; i < COLS; i++) {
+        const col = document.createElement("div");
+        col.className = "col";
+
+        // enche a coluna com spans (para o teu CSS .hero-binarywave .col)
+        for (let j = 0; j < ROWS; j++) {
+          const bit = document.createElement("span");
+          bit.textContent = randBit();
+          col.appendChild(bit);
+        }
+
+        // variações leves por layer
+        const baseDelay = Math.random() * 8;
+        const baseDur = 7 + Math.random() * 8;
+
+        col.style.animationDelay = `${-(baseDelay + layerIndex)}s`;
+        col.style.animationDuration = `${(baseDur + layerIndex * 1.2).toFixed(2)}s`;
+        col.style.opacity = (0.35 + Math.random() * 0.55).toFixed(2);
+
+        layer.appendChild(col);
+      }
     });
-  });
 
-  closeEls.forEach((el) => el.addEventListener("click", closeModal));
+    // se reduced motion, não faz shimmer
+    if (prefersReducedMotion) return;
 
-  if (prevBtn) prevBtn.addEventListener("click", goPrev);
-  if (nextBtn) nextBtn.addEventListener("click", goNext);
-
-  document.addEventListener("keydown", (e) => {
-    if (!modal || modal.hidden) return;
-    if (e.key === "Escape") closeModal();
-    if (e.key === "ArrowLeft") goPrev();
-    if (e.key === "ArrowRight") goNext();
-  });
-
-  // Thumb videos: deixa loop no HTML (preview fica vivo).
-  // Se queres mesmo parar no fim, ok — mas isso mata o loop.
-  // Eu deixava loop ON no thumb. Vou só garantir playsinline/muted.
-  document.querySelectorAll(".portfolio-thumb-video").forEach((v) => {
-    v.muted = true;
-    v.playsInline = true;
-  });
-});
+    // shimmer: troca uns bits aleatórios sem matar performance
+    setInterval(() => {
+      layers.forEach((layer) => {
+        const cols = layer.children;
+        for (let i = 0; i < cols.length; i++) {
+          if (Math.random() < 0.18) {
+            const spans = cols[i].querySelectorAll("span");
+            if (!spans.length) continue;
+            const k = (Math.random() * spans.length) | 0;
+            spans[k].textContent = spans[k].textContent === "1" ? "0" : "1";
+          }
+        }
+      });
+    }, 160);
+  }
+})();
