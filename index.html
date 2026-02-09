@@ -18,29 +18,135 @@
   </head>
 
   <body>
-    <!-- NAVBAR -->
-    <header class="navbar">
-      <div class="container nav-inner">
-        <div class="logo">
-          <img
-            src="assets/logo.png"
-            alt="WebWave Studio Logo"
-            class="logo-img"
-          />
-          <span class="logo-text">WebWave <span>Studio</span></span>
+   <!-- NAVBAR -->
+<header class="navbar">
+  <div class="container nav-inner">
+    <div class="logo">
+      <img src="assets/logo.png" alt="WebWave Studio Logo" class="logo-img" />
+      <span class="logo-text">WebWave <span>Studio</span></span>
+    </div>
+
+    <nav class="nav-links" id="nav-links">
+      <a href="#servicos">Serviços</a>
+      <a href="#portfolio">Portfólio</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="#contacto" class="btn btn-small nav-cta">Fala connosco</a>
+      <button class="btn btn-small btn-ghost" id="openAuth" type="button">Login</button>
+
+      <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menu" type="button">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- AUTH MODAL (ÚNICO) -->
+<div class="auth-modal" id="authModal" aria-hidden="true">
+  <div class="auth-backdrop" data-auth-close="true"></div>
+
+  <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="auth-head">
+      <h3 id="authTitle">Área do Cliente</h3>
+      <button class="auth-close" type="button" data-auth-close="true" aria-label="Fechar">✕</button>
+    </div>
+
+    <p class="auth-sub">Cria conta ou entra para veres o estado do projeto.</p>
+
+    <div class="auth-tabs" role="tablist" aria-label="Autenticação">
+      <button class="auth-tab is-active" type="button" role="tab" aria-selected="true" data-auth-tab="signup">
+        Criar conta
+      </button>
+      <button class="auth-tab" type="button" role="tab" aria-selected="false" data-auth-tab="login">
+        Entrar
+      </button>
+    </div>
+
+    <!-- SIGNUP -->
+    <section class="auth-panel" data-auth-panel="signup">
+      <form class="auth-form" id="signupForm">
+        <div class="auth-grid">
+          <label class="auth-field">
+            <span>Nome *</span>
+            <input name="firstName" autocomplete="given-name" required />
+          </label>
+
+          <label class="auth-field">
+            <span>Apelido *</span>
+            <input name="lastName" autocomplete="family-name" required />
+          </label>
+
+          <label class="auth-field auth-full">
+            <span>Empresa *</span>
+            <input name="companyName" autocomplete="organization" required />
+          </label>
+
+          <label class="auth-field auth-full">
+            <span>Área/Negócio *</span>
+            <input name="industry" placeholder="Ex: Barbearia, Restaurante..." required />
+          </label>
+
+          <label class="auth-field">
+            <span>Telemóvel *</span>
+            <input name="phone" inputmode="tel" autocomplete="tel" required />
+          </label>
+
+          <label class="auth-field">
+            <span>Email *</span>
+            <input name="email" type="email" autocomplete="email" required />
+          </label>
+
+          <label class="auth-field auth-full">
+            <span>Password *</span>
+            <input name="password" type="password" autocomplete="new-password" minlength="8" required />
+          </label>
         </div>
 
-        <nav class="nav-links" id="nav-links">
-          <a href="#servicos">Serviços</a>
-          <a href="#portfolio">Portfólio</a>
-          <a href="#reviews">Reviews</a>
-          <a href="#sobre">Sobre</a>
-          <a href="#contacto">Contacto</a>
-        </nav>
+        <p class="auth-msg auth-error" id="signupError" aria-live="polite"></p>
+        <p class="auth-msg auth-success" id="signupSuccess" aria-live="polite"></p>
 
-        <a href="#contacto" class="btn btn-small nav-cta">Fala connosco</a>
+        <button class="btn auth-submit" type="submit">Criar conta</button>
+        
+      </form>
+    </section>
 
-        <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menu">
+    <!-- LOGIN -->
+    <section class="auth-panel" data-auth-panel="login" hidden>
+      <form class="auth-form" id="loginForm">
+        <label class="auth-field">
+          <span>Email *</span>
+          <input name="email" type="email" autocomplete="email" required />
+        </label>
+
+        <label class="auth-field">
+          <span>Password *</span>
+          <input name="password" type="password" autocomplete="current-password" required />
+        </label>
+
+        <div class="auth-row">
+          <button class="auth-link" id="forgotBtn" type="button">Esqueci-me da password</button>
+        </div>
+
+        <p class="auth-msg auth-error" id="loginError" aria-live="polite"></p>
+        <p class="auth-msg auth-success" id="loginSuccess" aria-live="polite"></p>
+
+        <button class="btn auth-submit" type="submit">Entrar</button>
+      </form>
+    </section>
+  </div>
+</div>
+
+        <!-- Mobile toggle -->
+        <button
+          class="nav-toggle"
+          id="nav-toggle"
+          type="button"
+          aria-label="Abrir menu"
+        >
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -85,10 +191,6 @@
               <span class="metric-number" id="metric-clientes">+0</span>
               <span class="metric-label">projetos criados</span>
             </div>
-          </div>
-        </div>
-
-        
           </div>
         </div>
       </div>
@@ -261,7 +363,6 @@
                 <source src="assets.lumiworks/LumiWorks.mp4" type="video/mp4" />
               </video>
             </div>
-
             <div class="portfolio-body">
               <div class="portfolio-meta">
                 <span class="tag">Landing de Serviços</span>
@@ -398,15 +499,12 @@
                 <source src="assets.Barber/CraftClient.mp4" type="video/mp4" />
               </video>
             </div>
-
             <div class="portfolio-body">
               <div class="portfolio-meta">
                 <span class="tag">Barbearia</span>
                 <span class="pill">Reservas</span>
               </div>
-
               <p>Serviços, equipa, reviews e CTA direto para marcação.</p>
-
               <div class="portfolio-actions">
                 <a class="portfolio-link" href="#contacto">Quero este estilo</a>
                 <button
@@ -467,7 +565,6 @@
                 <source src="assets.tripnest/TripNest.mp4" type="video/mp4" />
               </video>
             </div>
-
             <div class="portfolio-body">
               <div class="portfolio-meta">
                 <span class="tag">Alojamento Local / AirBNB / Hotel</span>
@@ -498,8 +595,8 @@
     <section class="reviews-full" id="reviews">
       <div class="reviews-header">
         <p class="eyebrow">Feedback</p>
-        <h2>O que clientes dizem sobre o nosso trabalho</h2>
-        <p>Opiniões reais de quem já trabalhou connosco.</p>
+        <h2>O que os clientes dizem sobre o nosso trabalho</h2>
+        <p>Opiniões de quem já trabalhou connosco.</p>
       </div>
 
       <div class="reviews-marquee">
@@ -507,97 +604,80 @@
       </div>
     </section>
 
-    <!-- SOBRE (CPU) -->
-<section class="section about-cpu" id="sobre">
-  <div class="container">
-    <div class="cpu-board">
-      <!-- pistas (visual only) -->
-      <div class="cpu-traces" aria-hidden="true"></div>
+    <!-- SOBRE -->
+    <section class="section" id="sobre">
+      <div class="container">
+        <div class="about-card">
+          <p class="eyebrow">Sobre nós</p>
+          <h2>Estúdio pequeno, foco total no detalhe.</h2>
 
-      <!-- CHIP / CORE -->
-      <div class="cpu-core">
-        <p class="eyebrow">Sobre nós</p>
+          <p class="about-lead">
+            Ajudo negócios a criarem websites modernos, rápidos e pensados para
+            converter — sem complicações técnicas e sem soluções genéricas.
+          </p>
 
-        <h2 class="cpu-title">Estúdio pequeno, foco total no detalhe.</h2>
+          <div class="about-split">
+            <div class="about-main">
+              <h3 class="about-subtitle">O que fazemos</h3>
+              <ul class="about-bullets">
+                <li>Websites profissionais adaptados ao teu negócio</li>
+                <li>Automação e integrações que poupam tempo</li>
+                <li>Suporte direto, sem intermediários</li>
+                <li>Suporte e reparações de hardware (quando necessário)</li>
+              </ul>
 
-        <p class="about-lead">
-          Ajudo negócios a criarem websites modernos, rápidos e pensados para converter — sem
-          complicações técnicas e sem soluções genéricas.
-        </p>
+              <h3 class="about-subtitle">Quem está por trás</h3>
 
-        <div class="cpu-grid">
-          <!-- MAIN -->
-          <div class="cpu-main">
-            <h3 class="about-subtitle">O que fazemos</h3>
-            <ul class="about-bullets">
-              <li>Websites profissionais adaptados ao teu negócio</li>
-              <li>Automação e integrações que poupam tempo</li>
-              <li>Suporte direto, sem intermediários</li>
-              <li>Suporte e reparações de hardware (quando necessário)</li>
-            </ul>
+              <p>
+                <strong>Nuno Lima</strong>, fundador da
+                <strong>WebWave Studio</strong>. Desenvolvo websites e soluções
+                digitais com foco em performance, clareza e resultadosbr.
+              </p>
 
-            <h3 class="about-subtitle">Quem está por trás</h3>
+              <p>
+                Trabalho de forma próxima e personalizada — do planeamento à
+                entrega — para garantir soluções modernas, rápidas e fáceis de
+                gerir.
+              </p>
 
-            <p>
-              <strong>Nuno Lima</strong>, fundador da <strong>WebWave Studio</strong>.
-              Desenvolvo websites e soluções digitais com foco em performance, clareza e resultados reais.
-            </p>
+              <p>
+                Acompanhamento <strong>remoto ou presencial</strong> com
+                TeamViewer/AnyDesk, com contacto direto e respostas rápidas.
+              </p>
 
-            <p>
-              Trabalho de forma próxima e personalizada — do planeamento à entrega — para garantir
-              soluções modernas, rápidas e fáceis de gerir.
-            </p>
-
-            <p>
-              Acompanhamento <strong>remoto ou presencial</strong> com TeamViewer/AnyDesk, com contacto
-              direto e respostas rápidas.
-            </p>
-
-            <div class="about-callout cpu-callout">
-              <strong>Objetivo:</strong> criar soluções digitais sólidas e atuais, sem processos técnicos
-              desnecessários — focadas em ajudar negócios a crescer online.
+              <div class="about-callout">
+                <strong>Objetivo:</strong> criar soluções digitais sólidas e
+                atuais, sem processos técnicos desnecessários — focadas em
+                ajudar negócios a crescer online.
+              </div>
             </div>
+
+            <aside class="about-ocean-panel" aria-label="Como trabalhamos">
+              <div class="ocean-badge">
+                <span class="ocean-dot"></span>
+                <span>Como trabalhamos</span>
+              </div>
+
+              <ul class="ocean-steps">
+                <li><span class="step-icon">✓</span> Reunião</li>
+                <li>
+                  <span class="step-icon">✓</span> Primeira versão em até 72h
+                </li>
+                <li><span class="step-icon">✓</span> Revisões claras</li>
+                <li><span class="step-icon">✓</span> Publicação</li>
+              </ul>
+
+              <div class="ocean-mini">
+                <div class="wavebar"></div>
+                <p class="ocean-mini-text">
+                  Processo simples, rápido e transparente — sem complicações.
+                </p>
+              </div>
+            </aside>
           </div>
-
-          <!-- SIDE (pins) -->
-          <aside class="cpu-side" aria-label="Como trabalhamos">
-            <div class="cpu-side-head">
-              <span class="pin-dot" aria-hidden="true"></span>
-              <span>Como trabalhamos</span>
-            </div>
-
-            <ul class="cpu-steps">
-              <li>
-                <span class="pin">✓</span>
-                <span><strong>Reunião rápida</strong> para entender o negócio</span>
-              </li>
-              <li>
-                <span class="pin">✓</span>
-                <span><strong>Primeira versão</strong> em até 72 horas</span>
-              </li>
-              <li>
-                <span class="pin">✓</span>
-                <span><strong>Revisões claras</strong> baseadas no teu feedback</span>
-              </li>
-              <li>
-                <span class="pin">✓</span>
-                <span><strong>Publicação</strong> + próximos passos</span>
-              </li>
-            </ul>
-
-            <div class="cpu-mini">
-              <div class="cpu-signal" aria-hidden="true"></div>
-              <p class="cpu-mini-text">Processo simples, rápido e transparente — sem complicar.</p>
-            </div>
-          </aside>
         </div>
       </div>
-
-      <!-- fade no fim (para não “cortar” o fundo) -->
-      <div class="cpu-fade" aria-hidden="true"></div>
-    </div>
-  </div>
-</section>
+    </section>
 
     <!-- CONTACTO -->
     <section class="section section-alt" id="contacto">
@@ -749,6 +829,8 @@
       </div>
     </footer>
 
+   
+
     <!-- PORTFOLIO MODAL -->
     <div class="portfolio-modal" id="portfolio-modal" hidden>
       <div class="portfolio-modal-backdrop" data-close-portfolio></div>
@@ -781,9 +863,7 @@
             >
               ‹
             </button>
-
             <div class="viewer-stage" id="viewer-stage"></div>
-
             <button
               class="viewer-arrow right"
               type="button"
@@ -800,6 +880,99 @@
         </div>
       </div>
     </div>
+    
+    <!-- AUTH MODAL -->
+<div class="auth-modal" id="authModal" aria-hidden="true">
+  <div class="auth-backdrop" data-auth-close="true"></div>
+
+  <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="auth-head">
+      <h3 id="authTitle">Área do Cliente</h3>
+      <button class="auth-close" type="button" data-auth-close="true" aria-label="Fechar">✕</button>
+    </div>
+
+    <div class="auth-tabs" role="tablist" aria-label="Autenticação">
+      <button class="auth-tab is-active" type="button" role="tab" aria-selected="true" data-auth-tab="signup">
+        Criar conta
+      </button>
+      <button class="auth-tab" type="button" role="tab" aria-selected="false" data-auth-tab="login">
+        Entrar
+      </button>
+    </div>
+
+    <!-- SIGNUP -->
+    <section class="auth-panel" data-auth-panel="signup">
+      <form class="auth-form" id="signupForm">
+        <div class="auth-grid">
+          <label class="auth-field">
+            <span>Nome *</span>
+            <input name="firstName" autocomplete="given-name" required />
+          </label>
+
+          <label class="auth-field">
+            <span>Apelido *</span>
+            <input name="lastName" autocomplete="family-name" required />
+          </label>
+
+          <label class="auth-field auth-full">
+            <span>Empresa *</span>
+            <input name="companyName" autocomplete="organization" required />
+          </label>
+
+          <label class="auth-field">
+            <span>Área/Negócio *</span>
+            <input name="industry" placeholder="Ex: Barbearia, Restaurante..." required />
+          </label>
+
+          <label class="auth-field">
+            <span>Telemóvel *</span>
+            <input name="phone" inputmode="tel" autocomplete="tel" required />
+          </label>
+
+          <label class="auth-field auth-full">
+            <span>Email *</span>
+            <input name="email" type="email" autocomplete="email" required />
+          </label>
+
+          <label class="auth-field auth-full">
+            <span>Password *</span>
+            <input name="password" type="password" autocomplete="new-password" minlength="8" required />
+          </label>
+        </div>
+
+        <p class="auth-msg auth-error" id="signupError" aria-live="polite"></p>
+        <p class="auth-msg auth-success" id="signupSuccess" aria-live="polite"></p>
+
+        <button class="btn auth-submit" type="submit">Criar conta</button>
+        <p class="auth-fineprint">Depois ligamos isto ao sistema de marcações no teu projeto.</p>
+      </form>
+    </section>
+
+    <!-- LOGIN -->
+    <section class="auth-panel" data-auth-panel="login" hidden>
+      <form class="auth-form" id="loginForm">
+        <label class="auth-field">
+          <span>Email *</span>
+          <input name="email" type="email" autocomplete="email" required />
+        </label>
+
+        <label class="auth-field">
+          <span>Password *</span>
+          <input name="password" type="password" autocomplete="current-password" required />
+        </label>
+
+        <div class="auth-row">
+          <button class="auth-link" id="forgotBtn" type="button">Esqueci-me da password</button>
+        </div>
+
+        <p class="auth-msg auth-error" id="loginError" aria-live="polite"></p>
+        <p class="auth-msg auth-success" id="loginSuccess" aria-live="polite"></p>
+
+        <button class="btn auth-submit" type="submit">Entrar</button>
+      </form>
+    </section>
+  </div>
+</div>
 
     <script src="script.js"></script>
   </body>

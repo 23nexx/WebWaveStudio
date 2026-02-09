@@ -8,7 +8,7 @@
   const prefersReducedMotion = mm("(prefers-reduced-motion: reduce)");
   const canHover = mm("(hover: hover)");
 
-  // ✅ mete false quando já não precisares
+  // mete true quando estiveres a debuggar
   const DEBUG = false;
   const log = (...a) => DEBUG && console.log("[WebWave]", ...a);
   const warn = (...a) => DEBUG && console.warn("[WebWave]", ...a);
@@ -22,7 +22,9 @@
     initHeroCardTilt();
     initPortfolioTabs();
     initPortfolioModal();
-    initBinaryWave(); // só corre se existir #bw-track
+    initBinaryWave(); // digital rain
+    initCpuPulses(); // se existir SVG/pulses no about (se não existir, ignora)
+    initAuthModal(); // login/signup modal
   });
 
   /* ============================
@@ -33,18 +35,18 @@
     const navLinks = $("#nav-links");
     if (!navToggle || !navLinks) return;
 
-    navToggle.setAttribute("aria-expanded", "false");
-
-    navToggle.addEventListener("click", () => {
-      const isOpen = navLinks.classList.toggle("open");
-      navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    });
-
     $$("a", navLinks).forEach((a) => {
       a.addEventListener("click", () => {
         navLinks.classList.remove("open");
         navToggle.setAttribute("aria-expanded", "false");
       });
+    });
+
+    navToggle.setAttribute("aria-expanded", "false");
+
+    navToggle.addEventListener("click", () => {
+      const isOpen = navLinks.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
     });
 
     document.addEventListener("click", (e) => {
@@ -262,7 +264,7 @@
   }
 
   /* ============================
-     PORTFOLIO MODAL (fix final)
+     PORTFOLIO MODAL
   ============================ */
   function initPortfolioModal() {
     const modal = $("#portfolio-modal");
@@ -272,18 +274,8 @@
     const prevBtn = $("[data-viewer-prev]");
     const nextBtn = $("[data-viewer-next]");
 
-    if (!modal || !stage || !counter || !prevBtn || !nextBtn) {
-      warn("Modal missing elements", {
-        modal,
-        stage,
-        counter,
-        prevBtn,
-        nextBtn,
-      });
-      return;
-    }
+    if (!modal || !stage || !counter || !prevBtn || !nextBtn) return;
 
-    // ⚠️ GitHub Pages é case-sensitive. Se uma pasta/vídeo estiver com nome diferente -> 404.
     const DEMOS = {
       servicos: {
         title: "Landing de Serviços — LumiWorks",
@@ -353,10 +345,7 @@
       destroyStage();
 
       const s = slides[index];
-      if (!s) {
-        showError("Sem slides configurados para esta demo.");
-        return;
-      }
+      if (!s) return showError("Sem slides configurados para esta demo.");
 
       if (s.type === "video") {
         const v = document.createElement("video");
@@ -368,11 +357,9 @@
         v.loop = true;
         v.playsInline = true;
         v.preload = "metadata";
-
-        v.addEventListener("error", () => {
-          showError(`Erro/404 no vídeo: ${s.src}`);
-        });
-
+        v.addEventListener("error", () =>
+          showError(`Erro/404 no vídeo: ${s.src}`),
+        );
         stage.appendChild(v);
         v.play().catch(() => {});
       } else {
@@ -380,11 +367,9 @@
         img.className = "viewer-media";
         img.src = s.src;
         img.alt = "Demo";
-
-        img.addEventListener("error", () => {
-          showError(`Erro/404 na imagem: ${s.src}`);
-        });
-
+        img.addEventListener("error", () =>
+          showError(`Erro/404 na imagem: ${s.src}`),
+        );
         stage.appendChild(img);
       }
 
@@ -394,29 +379,21 @@
     };
 
     const openModal = (key) => {
-      const k = String(key || "").trim();
-      const cfg = DEMOS[k];
-
-      if (!cfg) {
-        modal.hidden = false;
-        modal.removeAttribute("hidden");
-        lockScroll(true);
-        if (titleEl) titleEl.textContent = "Demo";
-        showError(
-          `Não existe DEMOS["${k}"]. O data-open-portfolio não bate com as keys.`,
-        );
-        return;
-      }
-
-      slides = Array.isArray(cfg.slides) ? cfg.slides : [];
-      index = 0;
-
-      if (titleEl) titleEl.textContent = cfg.title || "Demo";
-
+      const cfg = DEMOS[String(key || "").trim()];
       modal.hidden = false;
       modal.removeAttribute("hidden");
       lockScroll(true);
 
+      if (!cfg) {
+        if (titleEl) titleEl.textContent = "Demo";
+        return showError(
+          `Não existe DEMOS["${key}"] (data-open-portfolio não bate).`,
+        );
+      }
+
+      slides = Array.isArray(cfg.slides) ? cfg.slides : [];
+      index = 0;
+      if (titleEl) titleEl.textContent = cfg.title || "Demo";
       render();
     };
 
@@ -427,7 +404,6 @@
       lockScroll(false);
     };
 
-    // ✅ Delegation: abre/fecha sem depender de binds em cada botão
     document.addEventListener(
       "click",
       (e) => {
@@ -478,54 +454,12 @@
       }
     });
 
-    log("Portfolio modal ready. Keys:", Object.keys(DEMOS));
+    log("Portfolio modal ready.", Object.keys(DEMOS));
   }
 
   /* ============================
-     HERO — DIGITAL RAIN (#bw-track)
-     (no teu HTML atual não existe, por isso não faz nada)
+     HERO — DIGITAL RAIN (final, sem duplicados)
   ============================ */
-  function initBinaryWave() {
-    const track = $("#bw-track");
-    if (!track) return;
-
-    const COLS = 22;
-    const LEN = 240;
-    const randBit = () => (Math.random() > 0.5 ? "1" : "0");
-
-    track.innerHTML = "";
-
-    for (let i = 0; i < COLS; i++) {
-      const col = document.createElement("span");
-      col.className = "bw-col";
-
-      let s = "";
-      for (let j = 0; j < LEN; j++) s += randBit();
-      col.textContent = s;
-
-      col.style.animationDelay = `${-(Math.random() * 10).toFixed(2)}s`;
-      col.style.animationDuration = `${(7 + Math.random() * 8).toFixed(2)}s`;
-      col.style.opacity = (0.35 + Math.random() * 0.55).toFixed(2);
-
-      track.appendChild(col);
-    }
-
-    if (prefersReducedMotion) return;
-
-    setInterval(() => {
-      const cols = track.children;
-      for (let i = 0; i < cols.length; i++) {
-        if (Math.random() < 0.22) {
-          const t = cols[i].textContent;
-          if (!t || t.length < 5) continue;
-          const k = (Math.random() * t.length) | 0;
-          cols[i].textContent =
-            t.slice(0, k) + (t[k] === "1" ? "0" : "1") + t.slice(k + 1);
-        }
-      }
-    }, 180);
-  }
-
   function initBinaryWave() {
     const container = document.querySelector(".hero-binarywave");
     if (!container) return;
@@ -533,11 +467,10 @@
     const layers = Array.from(container.querySelectorAll(".rain"));
     if (!layers.length) return;
 
-    const COLS = 22; // nº de colunas
-    const ROWS = 70; // nº de bits por coluna (ajusta)
+    const COLS = 22;
+    const ROWS = 70;
     const randBit = () => (Math.random() > 0.5 ? "1" : "0");
 
-    // limpa e gera colunas por layer
     layers.forEach((layer, layerIndex) => {
       layer.innerHTML = "";
 
@@ -545,14 +478,12 @@
         const col = document.createElement("div");
         col.className = "col";
 
-        // enche a coluna com spans (para o teu CSS .hero-binarywave .col)
         for (let j = 0; j < ROWS; j++) {
           const bit = document.createElement("span");
           bit.textContent = randBit();
           col.appendChild(bit);
         }
 
-        // variações leves por layer
         const baseDelay = Math.random() * 8;
         const baseDur = 7 + Math.random() * 8;
 
@@ -564,10 +495,8 @@
       }
     });
 
-    // se reduced motion, não faz shimmer
     if (prefersReducedMotion) return;
 
-    // shimmer: troca uns bits aleatórios sem matar performance
     setInterval(() => {
       layers.forEach((layer) => {
         const cols = layer.children;
@@ -581,5 +510,229 @@
         }
       });
     }, 160);
+  }
+
+  /* ============================
+     CPU pulses (se existir no DOM)
+  ============================ */
+  function initCpuPulses() {
+    const pulses = document.querySelectorAll(".cpu-traces .pulse");
+    if (!pulses.length) return;
+
+    pulses.forEach((p) => {
+      const dur = 2.2 + Math.random() * 1.8;
+      const delay = -(Math.random() * dur);
+      p.style.animationDuration = `${dur.toFixed(2)}s`;
+      p.style.animationDelay = `${delay.toFixed(2)}s`;
+      p.style.opacity = (0.65 + Math.random() * 0.3).toFixed(2);
+    });
+  }
+
+  /* ============================
+     AUTH MODAL (abrir/fechar/tabs + placeholders)
+  ============================ */
+  function initAuthModal() {
+    const openBtn = $("#openAuth");
+    const modal = $("#authModal");
+    if (!openBtn || !modal) return;
+
+    const closeEls = $$("[data-auth-close='true']", modal);
+    const tabBtns = $$("[data-auth-tab]", modal);
+    const panels = $$("[data-auth-panel]", modal);
+    const signupForm = $("#signupForm");
+    const loginForm = $("#loginForm");
+    const forgotBtn = $("#forgotBtn");
+
+    const signupError = $("#signupError");
+    const signupSuccess = $("#signupSuccess");
+    const loginError = $("#loginError");
+    const loginSuccess = $("#loginSuccess");
+
+    const lockScroll = (lock) => {
+      document.documentElement.style.overflow = lock ? "hidden" : "";
+      document.body.style.overflow = lock ? "hidden" : "";
+    };
+
+    const clearMessages = () => {
+      if (signupError) signupError.textContent = "";
+      if (signupSuccess) signupSuccess.textContent = "";
+      if (loginError) loginError.textContent = "";
+      if (loginSuccess) loginSuccess.textContent = "";
+    };
+
+    const setTab = (name) => {
+      tabBtns.forEach((b) => {
+        const isActive = b.dataset.authTab === name;
+        b.classList.toggle("is-active", isActive);
+        b.setAttribute("aria-selected", isActive ? "true" : "false");
+      });
+
+      panels.forEach((p) => {
+        const isPanel = p.dataset.authPanel === name;
+        p.hidden = !isPanel;
+      });
+
+      clearMessages();
+    };
+
+    const open = () => {
+      modal.setAttribute("aria-hidden", "false");
+      modal.classList.add("is-open");
+      lockScroll(true);
+      clearMessages();
+
+      // default: signup
+      setTab("signup");
+
+      // focus first input
+      const first = $("input, select, button", modal);
+      if (first) first.focus({ preventScroll: true });
+    };
+
+    const close = () => {
+      modal.setAttribute("aria-hidden", "true");
+      modal.classList.remove("is-open");
+      lockScroll(false);
+      clearMessages();
+    };
+
+    // open
+    openBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      open();
+    });
+
+    // close (backdrop + X)
+    closeEls.forEach((el) => el.addEventListener("click", () => close()));
+
+    // ESC
+    document.addEventListener("keydown", (e) => {
+      if (!modal.classList.contains("is-open")) return;
+      if (e.key === "Escape") close();
+    });
+
+    // tabs
+    tabBtns.forEach((b) => {
+      b.addEventListener("click", () => setTab(b.dataset.authTab));
+    });
+
+    // ---- forms (aqui é onde ligas Firebase depois) ----
+    const getFormData = (form) => {
+      const fd = new FormData(form);
+      const obj = {};
+      for (const [k, v] of fd.entries()) obj[k] = String(v).trim();
+      return obj;
+    };
+
+    const requireFields = (data, fields) =>
+      fields.filter((f) => !data[f] || data[f].length === 0);
+
+    if (signupForm) {
+      signupForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearMessages();
+
+        const data = getFormData(signupForm);
+        const missing = requireFields(data, [
+          "firstName",
+          "lastName",
+          "companyName",
+          "industry",
+          "phone",
+          "email",
+          "password",
+        ]);
+
+        if (missing.length) {
+          if (signupError)
+            signupError.textContent = "Preenche todos os campos obrigatórios.";
+          return;
+        }
+
+        if (data.password.length < 8) {
+          if (signupError)
+            signupError.textContent = "Password demasiado curta (mínimo 8).";
+          return;
+        }
+
+        try {
+          // TODO: Firebase signup:
+          // 1) createUserWithEmailAndPassword(auth, data.email, data.password)
+          // 2) setDoc(doc(db, "clients", uid), { ...data, createdAt: serverTimestamp() })
+          // 3) opcional: sendEmailVerification(user)
+
+          if (signupSuccess) {
+            signupSuccess.textContent =
+              "Conta criada (demo). Liga Firebase para isto funcionar a sério.";
+          }
+          signupForm.reset();
+        } catch (err) {
+          if (signupError)
+            signupError.textContent = "Erro ao criar conta. Tenta novamente.";
+          warn(err);
+        }
+      });
+    }
+
+    if (loginForm) {
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearMessages();
+
+        const data = getFormData(loginForm);
+        const missing = requireFields(data, ["email", "password"]);
+        if (missing.length) {
+          if (loginError)
+            loginError.textContent = "Email e password são obrigatórios.";
+          return;
+        }
+
+        try {
+          // TODO: Firebase login:
+          // signInWithEmailAndPassword(auth, data.email, data.password)
+
+          if (loginSuccess) {
+            loginSuccess.textContent =
+              "Login efetuado (demo). Liga Firebase para isto funcionar a sério.";
+          }
+          loginForm.reset();
+
+          // close after login (optional)
+          // close();
+        } catch (err) {
+          if (loginError) loginError.textContent = "Credenciais inválidas.";
+          warn(err);
+        }
+      });
+    }
+
+    if (forgotBtn) {
+      forgotBtn.addEventListener("click", async () => {
+        clearMessages();
+
+        // tenta puxar email do form
+        const email =
+          (loginForm && $("input[name='email']", loginForm)?.value?.trim()) ||
+          "";
+        if (!email) {
+          if (loginError) loginError.textContent = "Escreve o email primeiro.";
+          return;
+        }
+
+        try {
+          // TODO: Firebase reset:
+          // sendPasswordResetEmail(auth, email)
+
+          if (loginSuccess)
+            loginSuccess.textContent =
+              "Reset (demo). Liga Firebase para enviar email.";
+        } catch (err) {
+          if (loginError)
+            loginError.textContent = "Não foi possível enviar reset.";
+          warn(err);
+        }
+      });
+    }
   }
 })();
