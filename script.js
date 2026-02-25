@@ -13,6 +13,17 @@
   const log = (...a) => DEBUG && console.log("[WebWave]", ...a);
   const warn = (...a) => DEBUG && console.warn("[WebWave]", ...a);
 
+  // ============================
+  // SUPABASE
+  // ============================
+  const SUPABASE_URL = "https://bvigpzldqobufsrrwryh.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_6_hrgiqYPf1ctfnyAYM5Iw_XJmEZld7";
+
+  const supabase = window.supabase?.createClient?.(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY,
+  );
+
   document.addEventListener("DOMContentLoaded", () => {
     initMobileNav();
     initFooterYear();
@@ -24,7 +35,7 @@
     initPortfolioModal();
     initBinaryWave(); // digital rain
     initCpuPulses(); // se existir SVG/pulses no about (se não existir, ignora)
-    initAuthModal(); // login/signup modal
+    initAuthModal(); // login/signup modal (SUPABASE)
   });
 
   /* ============================
@@ -458,7 +469,7 @@
   }
 
   /* ============================
-     HERO — DIGITAL RAIN (final, sem duplicados)
+     HERO — DIGITAL RAIN
   ============================ */
   function initBinaryWave() {
     const container = document.querySelector(".hero-binarywave");
@@ -529,7 +540,7 @@
   }
 
   /* ============================
-     AUTH MODAL (abrir/fechar/tabs + placeholders)
+     AUTH MODAL (SUPABASE)
   ============================ */
   function initAuthModal() {
     const openBtn = $("#openAuth");
@@ -539,6 +550,7 @@
     const closeEls = $$("[data-auth-close='true']", modal);
     const tabBtns = $$("[data-auth-tab]", modal);
     const panels = $$("[data-auth-panel]", modal);
+
     const signupForm = $("#signupForm");
     const loginForm = $("#loginForm");
     const forgotBtn = $("#forgotBtn");
@@ -580,11 +592,8 @@
       modal.classList.add("is-open");
       lockScroll(true);
       clearMessages();
-
-      // default: signup
       setTab("signup");
 
-      // focus first input
       const first = $("input, select, button", modal);
       if (first) first.focus({ preventScroll: true });
     };
@@ -596,28 +605,23 @@
       clearMessages();
     };
 
-    // open
     openBtn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
       open();
     });
 
-    // close (backdrop + X)
     closeEls.forEach((el) => el.addEventListener("click", () => close()));
 
-    // ESC
     document.addEventListener("keydown", (e) => {
       if (!modal.classList.contains("is-open")) return;
       if (e.key === "Escape") close();
     });
 
-    // tabs
-    tabBtns.forEach((b) => {
-      b.addEventListener("click", () => setTab(b.dataset.authTab));
-    });
+    tabBtns.forEach((b) =>
+      b.addEventListener("click", () => setTab(b.dataset.authTab)),
+    );
 
-    // ---- forms (aqui é onde ligas Firebase depois) ----
     const getFormData = (form) => {
       const fd = new FormData(form);
       const obj = {};
@@ -628,10 +632,35 @@
     const requireFields = (data, fields) =>
       fields.filter((f) => !data[f] || data[f].length === 0);
 
+    const needSupabase = () => {
+      if (supabase) return true;
+      if (loginError)
+        loginError.textContent =
+          "Supabase não carregou. Confirma o script CDN antes do script.js.";
+      if (signupError)
+        signupError.textContent =
+          "Supabase não carregou. Confirma o script CDN antes do script.js.";
+      return false;
+    };
+
+    const friendlyAuthError = (msg) => {
+      const m = String(msg || "").toLowerCase();
+      if (m.includes("invalid login credentials"))
+        return "Credenciais inválidas.";
+      if (m.includes("email not confirmed"))
+        return "Confirma o email antes de fazer login.";
+      if (m.includes("user already registered"))
+        return "Este email já tem conta.";
+      if (m.includes("password")) return "Password inválida (mínimo 8).";
+      return msg || "Erro. Tenta novamente.";
+    };
+
+    // SIGNUP
     if (signupForm) {
       signupForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         clearMessages();
+        if (!needSupabase()) return;
 
         const data = getFormData(signupForm);
         const missing = requireFields(data, [
@@ -649,7 +678,6 @@
             signupError.textContent = "Preenche todos os campos obrigatórios.";
           return;
         }
-
         if (data.password.length < 8) {
           if (signupError)
             signupError.textContent = "Password demasiado curta (mínimo 8).";
@@ -657,28 +685,49 @@
         }
 
         try {
-          // TODO: Firebase signup:
-          // 1) createUserWithEmailAndPassword(auth, data.email, data.password)
-          // 2) setDoc(doc(db, "clients", uid), { ...data, createdAt: serverTimestamp() })
-          // 3) opcional: sendEmailVerification(user)
+          const { data: signUpData, error } = await supabase.auth.signUp({
+            email: data.email,
+            password: data.password,
+            options: {
+              data: {
+                first_name: data.firstName,
+                last_name: data.lastName,
+                company: data.companyName,
+                business_area: data.industry,
+                phone: data.phone,
+              },
+            },
+          });
 
-          if (signupSuccess) {
-            signupSuccess.textContent =
-              "Conta criada (demo). Liga Firebase para isto funcionar a sério.";
+          if (error) throw error;
+
+          // Se confirm email estiver ligado, não há session e o email tem de chegar
+          if (!signUpData?.session) {
+            if (signupSuccess) {
+              signupSuccess.textContent =
+                "Conta criada. Confirma o email para ativar a conta e depois faz login.";
+            }
+            signupForm.reset();
+            return;
           }
+
+          if (signupSuccess)
+            signupSuccess.textContent = "Conta criada e sessão iniciada.";
           signupForm.reset();
         } catch (err) {
           if (signupError)
-            signupError.textContent = "Erro ao criar conta. Tenta novamente.";
+            signupError.textContent = friendlyAuthError(err?.message);
           warn(err);
         }
       });
     }
 
+    // LOGIN
     if (loginForm) {
       loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         clearMessages();
+        if (!needSupabase()) return;
 
         const data = getFormData(loginForm);
         const missing = requireFields(data, ["email", "password"]);
@@ -689,47 +738,49 @@
         }
 
         try {
-          // TODO: Firebase login:
-          // signInWithEmailAndPassword(auth, data.email, data.password)
+          const { error } = await supabase.auth.signInWithPassword({
+            email: data.email,
+            password: data.password,
+          });
+          if (error) throw error;
 
-          if (loginSuccess) {
-            loginSuccess.textContent =
-              "Login efetuado (demo). Liga Firebase para isto funcionar a sério.";
-          }
+          if (loginSuccess) loginSuccess.textContent = "Sessão iniciada.";
           loginForm.reset();
-
-          // close after login (optional)
           // close();
         } catch (err) {
-          if (loginError) loginError.textContent = "Credenciais inválidas.";
+          if (loginError)
+            loginError.textContent = friendlyAuthError(err?.message);
           warn(err);
         }
       });
     }
 
+    // FORGOT PASSWORD
     if (forgotBtn) {
       forgotBtn.addEventListener("click", async () => {
         clearMessages();
+        if (!needSupabase()) return;
 
-        // tenta puxar email do form
         const email =
           (loginForm && $("input[name='email']", loginForm)?.value?.trim()) ||
           "";
+
         if (!email) {
           if (loginError) loginError.textContent = "Escreve o email primeiro.";
           return;
         }
 
         try {
-          // TODO: Firebase reset:
-          // sendPasswordResetEmail(auth, email)
+          const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + "/reset.html",
+          });
+          if (error) throw error;
 
           if (loginSuccess)
-            loginSuccess.textContent =
-              "Reset (demo). Liga Firebase para enviar email.";
+            loginSuccess.textContent = "Email de recuperação enviado.";
         } catch (err) {
           if (loginError)
-            loginError.textContent = "Não foi possível enviar reset.";
+            loginError.textContent = friendlyAuthError(err?.message);
           warn(err);
         }
       });
