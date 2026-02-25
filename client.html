@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Área do Cliente | WebWave Studio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header class="navbar">
+      <div class="container nav-inner">
+        <div class="logo">
+          <img
+            src="assets/logo.png"
+            alt="WebWave Studio Logo"
+            class="logo-img"
+          />
+          <span class="logo-text">WebWave <span>Studio</span></span>
+        </div>
+
+        <div class="nav-actions">
+          <a class="btn btn-small btn-ghost" href="index.html"
+            >Voltar ao site</a
+          >
+          <button class="btn btn-small" id="logoutBtn" type="button">
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="section">
+      <div class="container">
+        <div class="section-header">
+          <p class="eyebrow">Área do Cliente</p>
+          <h2 id="welcome">A carregar…</h2>
+          <p id="sub" style="max-width: 700px; margin: 0 auto"></p>
+        </div>
+
+        <div class="grid-3" style="grid-template-columns: 1fr; gap: 1.2rem">
+          <div class="card">
+            <h3>O teu perfil</h3>
+            <div
+              id="profileBox"
+              style="margin-top: 0.75rem; color: var(--text-muted)"
+            >
+              A carregar perfil…
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Projetos</h3>
+            <div
+              id="projectsBox"
+              style="margin-top: 0.75rem; color: var(--text-muted)"
+            >
+              A carregar projetos…
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="cliente.js"></script>
+  </body>
+</html>

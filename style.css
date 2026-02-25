@@ -362,14 +362,6 @@ p {
   padding: 4rem 0 5.5rem 0; /* bottom maior para caber o scroll hint */
 }
 
-.hero-inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
-  gap: 3rem;
-  min-height: calc(100svh - 64px - 6rem);
-  align-items: center; /* 👈 ISTO */
-}
-
 .hero-subtitle {
   max-width: 32rem;
 }
@@ -443,9 +435,11 @@ p {
     border-color 0.2s ease;
 }
 
-.hero-content {
-  margin-left: var(--hero-shift-x, -15rem);
-  max-width: 780px;
+@media (max-width: 880px) {
+  .hero-content {
+    margin-left: 0; /* mata o -15rem */
+    max-width: 100%;
+  }
 }
 
 .hero-card.is-visible {
@@ -1675,6 +1669,8 @@ button.portfolio-link {
   position: absolute;
   top: 0;
   right: 0;
+  left: auto;
+  max-width: 100%;
   width: min(52vw, 760px);
   height: 100%;
   pointer-events: none;
@@ -1826,32 +1822,12 @@ button.portfolio-link {
   }
 }
 
-.hero {
-  position: relative;
-  overflow: hidden;
-  background: radial-gradient(
-    circle at top left,
-    #e0faff 0,
-    #f5fafc 40%,
-    #f5fafc 100%
-  );
-
-  /* ✅ ocupa o ecrã (sem cortar por causa da navbar) */
-  min-height: calc(100svh - 64px);
-  padding: clamp(3rem, 5vw, 5.5rem) 0 clamp(3.25rem, 4vw, 4.5rem) 0;
-  grid-template-columns: 1fr !important;
-}
-
 .hero-inner {
-  position: relative;
-  z-index: 3;
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1.15fr);
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
   gap: 3rem;
-  align-items: center;
-
-  /* ✅ empurra conteúdo para o meio */
-  padding-left: clamp(0px, 4vw, 70px);
+  min-height: calc(100svh - 64px - 6rem);
+  align-items: center; /* 👈 ISTO */
 }
 
 .hero::after {
@@ -2344,5 +2320,70 @@ button.portfolio-link {
 
   .auth-grid {
     grid-template-columns: 1fr;
+  }
+}
+/* =========================
+   DESKTOP BREAKPOINTS
+   ========================= */
+
+/* tablet+ */
+@media (min-width: 768px) {
+  .hero-actions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .hero-actions .btn {
+    width: auto;
+  }
+
+  .hero-metrics {
+    grid-template-columns: repeat(2, max-content);
+    gap: 14px;
+  }
+}
+
+/* desktop+ (se quiseres 2 colunas no hero) */
+@media (min-width: 1024px) {
+  .hero-inner {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center; /* ✅ vertical */
+    justify-items: start; /* ✅ horizontal dentro das células */
+  }
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+@media (max-width: 880px) {
+  .hero-content {
+    margin-left: 0 !important;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero-actions {
+    flex-direction: column;
+  }
+  .hero-actions .btn {
+    width: 100%;
+  }
+}
+
+/* HERO: puxar tudo mais para a esquerda (desktop) */
+@media (min-width: 1024px) {
+  .hero .container {
+    max-width: none; /* deixa de “centrar” pelo max-width */
+    margin-left: 0; /* tira o auto-center */
+    margin-right: 0;
+    padding-left: clamp(5rem, 5vw, 5rem);
+    padding-right: 0rem;
+  }
+
+  .hero-inner {
+    justify-items: start; /* garante alinhamento do conteúdo à esquerda */
   }
 }

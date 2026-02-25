@@ -18,139 +18,218 @@
   </head>
 
   <body>
-   <!-- NAVBAR -->
-<header class="navbar">
-  <div class="container nav-inner">
-    <div class="logo">
-      <img src="assets/logo.png" alt="WebWave Studio Logo" class="logo-img" />
-      <span class="logo-text">WebWave <span>Studio</span></span>
-    </div>
-
-    <nav class="nav-links" id="nav-links">
-      <a href="#servicos">Serviços</a>
-      <a href="#portfolio">Portfólio</a>
-      <a href="#reviews">Reviews</a>
-      <a href="#sobre">Sobre</a>
-      <a href="#contacto">Contacto</a>
-    </nav>
-
-    <div class="nav-actions">
-      <a href="#contacto" class="btn btn-small nav-cta">Fala connosco</a>
-      <button class="btn btn-small btn-ghost" id="openAuth" type="button">Login</button>
-
-      <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menu" type="button">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-</header>
-
-<!-- AUTH MODAL (ÚNICO) -->
-<div class="auth-modal" id="authModal" aria-hidden="true">
-  <div class="auth-backdrop" data-auth-close="true"></div>
-
-  <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-    <div class="auth-head">
-      <h3 id="authTitle">Área do Cliente</h3>
-      <button class="auth-close" type="button" data-auth-close="true" aria-label="Fechar">✕</button>
-    </div>
-
-    <p class="auth-sub">Cria conta ou entra para veres o estado do projeto.</p>
-
-    <div class="auth-tabs" role="tablist" aria-label="Autenticação">
-      <button class="auth-tab is-active" type="button" role="tab" aria-selected="true" data-auth-tab="signup">
-        Criar conta
-      </button>
-      <button class="auth-tab" type="button" role="tab" aria-selected="false" data-auth-tab="login">
-        Entrar
-      </button>
-    </div>
-
-    <!-- SIGNUP -->
-    <section class="auth-panel" data-auth-panel="signup">
-      <form class="auth-form" id="signupForm">
-        <div class="auth-grid">
-          <label class="auth-field">
-            <span>Nome *</span>
-            <input name="firstName" autocomplete="given-name" required />
-          </label>
-
-          <label class="auth-field">
-            <span>Apelido *</span>
-            <input name="lastName" autocomplete="family-name" required />
-          </label>
-
-          <label class="auth-field auth-full">
-            <span>Empresa *</span>
-            <input name="companyName" autocomplete="organization" required />
-          </label>
-
-          <label class="auth-field auth-full">
-            <span>Área/Negócio *</span>
-            <input name="industry" placeholder="Ex: Barbearia, Restaurante..." required />
-          </label>
-
-          <label class="auth-field">
-            <span>Telemóvel *</span>
-            <input name="phone" inputmode="tel" autocomplete="tel" required />
-          </label>
-
-          <label class="auth-field">
-            <span>Email *</span>
-            <input name="email" type="email" autocomplete="email" required />
-          </label>
-
-          <label class="auth-field auth-full">
-            <span>Password *</span>
-            <input name="password" type="password" autocomplete="new-password" minlength="8" required />
-          </label>
+    <!-- NAVBAR -->
+    <header class="navbar">
+      <div class="container nav-inner">
+        <div class="logo">
+          <img
+            src="assets/logo.png"
+            alt="WebWave Studio Logo"
+            class="logo-img"
+          />
+          <span class="logo-text">WebWave <span>Studio</span></span>
         </div>
 
-        <p class="auth-msg auth-error" id="signupError" aria-live="polite"></p>
-        <p class="auth-msg auth-success" id="signupSuccess" aria-live="polite"></p>
+        <nav class="nav-links" id="nav-links">
+          <a href="#servicos">Serviços</a>
+          <a href="#portfolio">Portfólio</a>
+          <a href="#reviews">Reviews</a>
+          <a href="#sobre">Sobre</a>
+          <a href="#contacto">Contacto</a>
+        </nav>
 
-        <button class="btn auth-submit" type="submit">Criar conta</button>
-        
-      </form>
-    </section>
+        <div class="nav-actions">
+          <a href="#contacto" class="btn btn-small nav-cta">Fala connosco</a>
+          <button class="btn btn-small btn-ghost" id="openAuth" type="button">
+            Login
+          </button>
 
-    <!-- LOGIN -->
-    <section class="auth-panel" data-auth-panel="login" hidden>
-      <form class="auth-form" id="loginForm">
-        <label class="auth-field">
-          <span>Email *</span>
-          <input name="email" type="email" autocomplete="email" required />
-        </label>
-
-        <label class="auth-field">
-          <span>Password *</span>
-          <input name="password" type="password" autocomplete="current-password" required />
-        </label>
-
-        <div class="auth-row">
-          <button class="auth-link" id="forgotBtn" type="button">Esqueci-me da password</button>
+          <!-- ✅ só 1 toggle -->
+          <button
+            class="nav-toggle"
+            id="nav-toggle"
+            aria-label="Abrir menu"
+            type="button"
+          >
+            <span></span><span></span><span></span>
+          </button>
         </div>
-
-        <p class="auth-msg auth-error" id="loginError" aria-live="polite"></p>
-        <p class="auth-msg auth-success" id="loginSuccess" aria-live="polite"></p>
-
-        <button class="btn auth-submit" type="submit">Entrar</button>
-      </form>
-    </section>
-  </div>
-</div>
-
-        <!-- Mobile toggle -->
-        <button
-          class="nav-toggle"
-          id="nav-toggle"
-          type="button"
-          aria-label="Abrir menu"
-        >
-          <span></span><span></span><span></span>
-        </button>
       </div>
     </header>
+
+    <!-- ✅ AUTH MODAL (ÚNICO) -->
+    <div class="auth-modal" id="authModal" aria-hidden="true">
+      <div class="auth-backdrop" data-auth-close="true"></div>
+
+      <div
+        class="auth-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="authTitle"
+      >
+        <div class="auth-head">
+          <h3 id="authTitle">Área do Cliente</h3>
+          <button
+            class="auth-close"
+            type="button"
+            data-auth-close="true"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
+        </div>
+
+        <p class="auth-sub">
+          Cria conta ou entra para veres o estado do projeto.
+        </p>
+
+        <div class="auth-tabs" role="tablist" aria-label="Autenticação">
+          <button
+            class="auth-tab is-active"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            data-auth-tab="signup"
+          >
+            Criar conta
+          </button>
+          <button
+            class="auth-tab"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            data-auth-tab="login"
+          >
+            Entrar
+          </button>
+        </div>
+
+        <!-- SIGNUP -->
+        <section class="auth-panel" data-auth-panel="signup">
+          <form class="auth-form" id="signupForm">
+            <div class="auth-grid">
+              <label class="auth-field">
+                <span>Nome *</span>
+                <input name="first_name" autocomplete="given-name" required />
+              </label>
+
+              <label class="auth-field">
+                <span>Apelido *</span>
+                <input name="last_name" autocomplete="family-name" required />
+              </label>
+
+              <label class="auth-field auth-full">
+                <span>Empresa *</span>
+                <input name="company" autocomplete="organization" required />
+              </label>
+
+              <label class="auth-field auth-full">
+                <span>Área/Negócio *</span>
+                <input
+                  name="business_area"
+                  placeholder="Ex: Barbearia, Restaurante..."
+                  required
+                />
+              </label>
+
+              <label class="auth-field">
+                <span>Telemóvel *</span>
+                <input
+                  name="phone"
+                  inputmode="tel"
+                  autocomplete="tel"
+                  required
+                />
+              </label>
+
+              <label class="auth-field">
+                <span>Email *</span>
+                <input
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                />
+              </label>
+
+              <label class="auth-field auth-full">
+                <span>Password *</span>
+                <input
+                  name="password"
+                  type="password"
+                  autocomplete="new-password"
+                  minlength="8"
+                  required
+                />
+              </label>
+            </div>
+
+            <p
+              class="auth-msg auth-error"
+              id="signupError"
+              aria-live="polite"
+            ></p>
+            <p
+              class="auth-msg auth-success"
+              id="signupSuccess"
+              aria-live="polite"
+            ></p>
+
+            <button class="btn auth-submit" type="submit">Criar conta</button>
+          </form>
+        </section>
+
+        <!-- LOGIN -->
+        <section class="auth-panel" data-auth-panel="login" hidden>
+          <form class="auth-form" id="loginForm">
+            <label class="auth-field">
+              <span>Email *</span>
+              <input name="email" type="email" autocomplete="email" required />
+            </label>
+
+            <label class="auth-field">
+              <span>Password *</span>
+              <input
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                required
+              />
+            </label>
+
+            <div
+              class="auth-row"
+              style="justify-content: space-between; align-items: center"
+            >
+              <button class="auth-link" id="forgotBtn" type="button">
+                Esqueci-me da password
+              </button>
+              <button
+                class="auth-link"
+                id="logoutBtn"
+                type="button"
+                style="display: none"
+              >
+                Logout
+              </button>
+            </div>
+
+            <p
+              class="auth-msg auth-error"
+              id="loginError"
+              aria-live="polite"
+            ></p>
+            <p
+              class="auth-msg auth-success"
+              id="loginSuccess"
+              aria-live="polite"
+            ></p>
+
+            <button class="btn auth-submit" type="submit">Entrar</button>
+          </form>
+        </section>
+      </div>
+    </div>
 
     <!-- HERO -->
     <section class="hero">
@@ -829,8 +908,6 @@
       </div>
     </footer>
 
-   
-
     <!-- PORTFOLIO MODAL -->
     <div class="portfolio-modal" id="portfolio-modal" hidden>
       <div class="portfolio-modal-backdrop" data-close-portfolio></div>
@@ -880,100 +957,233 @@
         </div>
       </div>
     </div>
-    
-    <!-- AUTH MODAL -->
-<div class="auth-modal" id="authModal" aria-hidden="true">
-  <div class="auth-backdrop" data-auth-close="true"></div>
 
-  <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-    <div class="auth-head">
-      <h3 id="authTitle">Área do Cliente</h3>
-      <button class="auth-close" type="button" data-auth-close="true" aria-label="Fechar">✕</button>
-    </div>
+    <!-- ✅ SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <div class="auth-tabs" role="tablist" aria-label="Autenticação">
-      <button class="auth-tab is-active" type="button" role="tab" aria-selected="true" data-auth-tab="signup">
-        Criar conta
-      </button>
-      <button class="auth-tab" type="button" role="tab" aria-selected="false" data-auth-tab="login">
-        Entrar
-      </button>
-    </div>
+    <script>
+      // ✅ mete os teus dados aqui
+      const SUPABASE_URL = "https://bvigpzldqobufsrrwryh.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "sb_publishable_6_hrgiqYPf1ctfnyAYM5Iw_XJmEZld7";
+      const supabase = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY,
+      );
 
-    <!-- SIGNUP -->
-    <section class="auth-panel" data-auth-panel="signup">
-      <form class="auth-form" id="signupForm">
-        <div class="auth-grid">
-          <label class="auth-field">
-            <span>Nome *</span>
-            <input name="firstName" autocomplete="given-name" required />
-          </label>
+      const $ = (s) => document.querySelector(s);
+      const $$ = (s) => document.querySelectorAll(s);
 
-          <label class="auth-field">
-            <span>Apelido *</span>
-            <input name="lastName" autocomplete="family-name" required />
-          </label>
+      const authModal = $("#authModal");
+      const openAuthBtn = $("#openAuth");
 
-          <label class="auth-field auth-full">
-            <span>Empresa *</span>
-            <input name="companyName" autocomplete="organization" required />
-          </label>
+      const signupForm = $("#signupForm");
+      const loginForm = $("#loginForm");
 
-          <label class="auth-field">
-            <span>Área/Negócio *</span>
-            <input name="industry" placeholder="Ex: Barbearia, Restaurante..." required />
-          </label>
+      const signupError = $("#signupError");
+      const signupSuccess = $("#signupSuccess");
+      const loginError = $("#loginError");
+      const loginSuccess = $("#loginSuccess");
 
-          <label class="auth-field">
-            <span>Telemóvel *</span>
-            <input name="phone" inputmode="tel" autocomplete="tel" required />
-          </label>
+      const forgotBtn = $("#forgotBtn");
+      const logoutBtn = $("#logoutBtn");
 
-          <label class="auth-field auth-full">
-            <span>Email *</span>
-            <input name="email" type="email" autocomplete="email" required />
-          </label>
+      function openModal() {
+        authModal.classList.add("is-open");
+        authModal.setAttribute("aria-hidden", "false");
+      }
 
-          <label class="auth-field auth-full">
-            <span>Password *</span>
-            <input name="password" type="password" autocomplete="new-password" minlength="8" required />
-          </label>
-        </div>
+      function closeModal() {
+        authModal.classList.remove("is-open");
+        authModal.setAttribute("aria-hidden", "true");
+      }
 
-        <p class="auth-msg auth-error" id="signupError" aria-live="polite"></p>
-        <p class="auth-msg auth-success" id="signupSuccess" aria-live="polite"></p>
+      function clearMsgs() {
+        signupError.textContent = "";
+        signupSuccess.textContent = "";
+        loginError.textContent = "";
+        loginSuccess.textContent = "";
+      }
 
-        <button class="btn auth-submit" type="submit">Criar conta</button>
-        <p class="auth-fineprint">Depois ligamos isto ao sistema de marcações no teu projeto.</p>
-      </form>
-    </section>
+      function setTab(tab) {
+        $$(".auth-tab").forEach((btn) => {
+          const active = btn.dataset.authTab === tab;
+          btn.classList.toggle("is-active", active);
+          btn.setAttribute("aria-selected", String(active));
+        });
 
-    <!-- LOGIN -->
-    <section class="auth-panel" data-auth-panel="login" hidden>
-      <form class="auth-form" id="loginForm">
-        <label class="auth-field">
-          <span>Email *</span>
-          <input name="email" type="email" autocomplete="email" required />
-        </label>
+        $$(".auth-panel").forEach((panel) => {
+          panel.hidden = panel.dataset.authPanel !== tab;
+        });
 
-        <label class="auth-field">
-          <span>Password *</span>
-          <input name="password" type="password" autocomplete="current-password" required />
-        </label>
+        clearMsgs();
+      }
 
-        <div class="auth-row">
-          <button class="auth-link" id="forgotBtn" type="button">Esqueci-me da password</button>
-        </div>
+      function getFormData(form) {
+        const fd = new FormData(form);
+        return Object.fromEntries(fd.entries());
+      }
 
-        <p class="auth-msg auth-error" id="loginError" aria-live="polite"></p>
-        <p class="auth-msg auth-success" id="loginSuccess" aria-live="polite"></p>
+      // open modal
+      openAuthBtn.addEventListener("click", () => openModal());
 
-        <button class="btn auth-submit" type="submit">Entrar</button>
-      </form>
-    </section>
-  </div>
-</div>
+      // close modal (backdrop + X)
+      document.addEventListener("click", (e) => {
+        const t = e.target;
+        if (t?.dataset?.authClose === "true") closeModal();
+      });
 
+      // tabs
+      $$(".auth-tab").forEach((btn) => {
+        btn.addEventListener("click", () => setTab(btn.dataset.authTab));
+      });
+
+      async function refreshAuthUI() {
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
+
+        if (session) {
+          logoutBtn.style.display = "inline";
+          openAuthBtn.textContent = "Conta";
+        } else {
+          logoutBtn.style.display = "none";
+          openAuthBtn.textContent = "Login";
+        }
+      }
+
+      async function upsertProfileIfPossible(userId, v) {
+        // Só funciona se houver sessão (se confirm email estiver ON e session for null, não dá).
+        const { error } = await supabase.from("profiles").upsert({
+          id: userId,
+          first_name: v.first_name,
+          last_name: v.last_name,
+          company: v.company,
+          business_area: v.business_area,
+          phone: v.phone,
+          email: v.email,
+        });
+
+        if (error) {
+          // não explodas por isto, só informa
+          console.warn(
+            "Profile upsert falhou (normal se não houver sessão ainda):",
+            error.message,
+          );
+        }
+      }
+
+      // SIGNUP
+      signupForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearMsgs();
+
+        const v = getFormData(signupForm);
+
+        try {
+          const { data, error } = await supabase.auth.signUp({
+            email: v.email,
+            password: v.password,
+            options: {
+              data: {
+                first_name: v.first_name,
+                last_name: v.last_name,
+                company: v.company,
+                business_area: v.business_area,
+                phone: v.phone,
+              },
+            },
+          });
+
+          if (error) throw error;
+
+          if (!data.session) {
+            signupSuccess.textContent =
+              "Conta criada. Confirma o email para poder entrar.";
+            signupForm.reset();
+            return;
+          }
+
+          await upsertProfileIfPossible(data.user.id, v);
+
+          signupSuccess.textContent = "Conta criada. A entrar...";
+          signupForm.reset();
+
+          // opcional: manda para dashboard
+          // window.location.href = "cliente.html";
+        } catch (err) {
+          signupError.textContent = err?.message || "Erro ao criar conta.";
+        }
+      });
+
+      // LOGIN
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearMsgs();
+
+        const v = getFormData(loginForm);
+
+        try {
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email: v.email,
+            password: v.password,
+          });
+
+          if (error) throw error;
+
+          loginSuccess.textContent = "Login feito";
+          await refreshAuthUI();
+
+          // opcional: manda para dashboard
+          // window.location.href = "cliente.html";
+        } catch (err) {
+          loginError.textContent = err?.message || "Erro no login.";
+        }
+      });
+
+      // RESET
+      forgotBtn.addEventListener("click", async () => {
+        clearMsgs();
+        const email = loginForm
+          .querySelector('input[name="email"]')
+          .value.trim();
+
+        if (!email) {
+          loginError.textContent = "Mete o email primeiro.";
+          return;
+        }
+
+        try {
+          const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin,
+          });
+          if (error) throw error;
+
+          loginSuccess.textContent = "Email enviado para reset da password.";
+        } catch (err) {
+          loginError.textContent = err?.message || "Erro ao enviar reset.";
+        }
+      });
+
+      // LOGOUT
+      logoutBtn.addEventListener("click", async () => {
+        clearMsgs();
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          loginError.textContent = error.message;
+          return;
+        }
+        loginSuccess.textContent = "Logout feito ✅";
+        await refreshAuthUI();
+      });
+
+      // INIT
+      document.addEventListener("DOMContentLoaded", async () => {
+        setTab("signup");
+        await refreshAuthUI();
+      });
+    </script>
+
+    <!-- o teu JS normal -->
     <script src="script.js"></script>
   </body>
 </html>
