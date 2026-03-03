@@ -8,7 +8,6 @@
   const prefersReducedMotion = mm("(prefers-reduced-motion: reduce)");
   const canHover = mm("(hover: hover)");
 
-  // mete true quando estiveres a debuggar
   const DEBUG = false;
   const log = (...a) => DEBUG && console.log("[WebWave]", ...a);
   const warn = (...a) => DEBUG && console.warn("[WebWave]", ...a);
@@ -33,9 +32,9 @@
     initHeroCardTilt();
     initPortfolioTabs();
     initPortfolioModal();
-    initBinaryWave(); // digital rain
-    initCpuPulses(); // se existir SVG/pulses no about (se não existir, ignora)
-    initAuthModal(); // login/signup modal (SUPABASE)
+    initBinaryWave();
+    initCpuPulses();
+    initAuthModal(); // ✅ SUPABASE auth
   });
 
   /* ============================
@@ -88,24 +87,54 @@
 
     const reviews = [
       {
-        text: "“Processo rápido, comunicação clara e resultado final impecável.”",
-        author: "— Filipe Rocha",
+        text: "“Cumpriram o prazo e o resultado ficou mesmo alinhado com a nossa marca.”",
+        author: "Pedro Almeida",
         stars: 5,
       },
       {
-        text: "“O site ficou moderno e leve. Notámos mais contactos logo na primeira semana.”",
-        author: "— Marta Silva",
+        text: "“A navegação ficou intuitiva e o carregamento está muito mais rápido.”",
+        author: "Joana Ribeiro",
+        stars: 4.5,
+      },
+      {
+        text: "“Deram boas sugestões e notou-se experiência em cada decisão.”",
+        author: "Ricardo Fernandes",
         stars: 5,
       },
       {
-        text: "“Design limpo e ótima experiência no telemóvel.”",
-        author: "— Catarina Costa",
+        text: "“Comunicação impecável e zero dores de cabeça durante o processo.”",
+        author: "Beatriz Martins",
+        stars: 4.9,
+      },
+      {
+        text: "“Ficou tudo bem estruturado e fácil de atualizar. Excelente trabalho.”",
+        author: "Diogo Carvalho",
+        stars: 4.1,
+      },
+      {
+        text: "“O detalhe no design e a consistência visual fizeram toda a diferença.”",
+        author: "Ana Sousa",
         stars: 5,
       },
       {
-        text: "“Muito acima do esperado. Trabalho profissional.”",
-        author: "— Inês Lopes",
+        text: "“Implementação rápida, feedback constante e entrega sem falhas.”",
+        author: "Gonçalo Teixeira",
         stars: 5,
+      },
+      {
+        text: "“A versão mobile ficou perfeita e o site passou a converter muito melhor.”",
+        author: "Mariana Pinto",
+        stars: 4,
+      },
+      {
+        text: "“Foram proativos e resolveram rapidamente os ajustes que pedimos.”",
+        author: "Hugo Correia",
+        stars: 5,
+      },
+      {
+        text: "“Profissionais, transparentes e com um cuidado enorme nos acabamentos.”",
+        author: "Leonor Santos",
+        stars: 4.2,
       },
     ];
 
@@ -540,7 +569,7 @@
   }
 
   /* ============================
-     AUTH MODAL (SUPABASE)
+     AUTH MODAL (SUPABASE) — FIXED
   ============================ */
   function initAuthModal() {
     const openBtn = $("#openAuth");
@@ -554,6 +583,7 @@
     const signupForm = $("#signupForm");
     const loginForm = $("#loginForm");
     const forgotBtn = $("#forgotBtn");
+    const logoutBtn = $("#logoutBtn");
 
     const signupError = $("#signupError");
     const signupSuccess = $("#signupSuccess");
@@ -580,8 +610,7 @@
       });
 
       panels.forEach((p) => {
-        const isPanel = p.dataset.authPanel === name;
-        p.hidden = !isPanel;
+        p.hidden = p.dataset.authPanel !== name;
       });
 
       clearMessages();
@@ -593,7 +622,6 @@
       lockScroll(true);
       clearMessages();
       setTab("signup");
-
       const first = $("input, select, button", modal);
       if (first) first.focus({ preventScroll: true });
     };
@@ -611,7 +639,7 @@
       open();
     });
 
-    closeEls.forEach((el) => el.addEventListener("click", () => close()));
+    closeEls.forEach((el) => el.addEventListener("click", close));
 
     document.addEventListener("keydown", (e) => {
       if (!modal.classList.contains("is-open")) return;
@@ -630,16 +658,14 @@
     };
 
     const requireFields = (data, fields) =>
-      fields.filter((f) => !data[f] || data[f].length === 0);
+      fields.filter((f) => !data[f] || String(data[f]).trim().length === 0);
 
     const needSupabase = () => {
       if (supabase) return true;
-      if (loginError)
-        loginError.textContent =
-          "Supabase não carregou. Confirma o script CDN antes do script.js.";
-      if (signupError)
-        signupError.textContent =
-          "Supabase não carregou. Confirma o script CDN antes do script.js.";
+      const msg =
+        "Supabase não carregou. Confirma o script CDN antes do script.js.";
+      if (loginError) loginError.textContent = msg;
+      if (signupError) signupError.textContent = msg;
       return false;
     };
 
@@ -655,7 +681,16 @@
       return msg || "Erro. Tenta novamente.";
     };
 
-    // SIGNUP
+    async function refreshAuthUI() {
+      if (!supabase) return;
+      const { data } = await supabase.auth.getSession();
+      const session = data.session;
+
+      if (logoutBtn) logoutBtn.style.display = session ? "inline" : "none";
+      openBtn.textContent = session ? "Conta" : "Login";
+    }
+
+    // SIGNUP (✅ nomes corretos do HTML)
     if (signupForm) {
       signupForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -664,10 +699,10 @@
 
         const data = getFormData(signupForm);
         const missing = requireFields(data, [
-          "firstName",
-          "lastName",
-          "companyName",
-          "industry",
+          "first_name",
+          "last_name",
+          "company",
+          "business_area",
           "phone",
           "email",
           "password",
@@ -678,7 +713,8 @@
             signupError.textContent = "Preenche todos os campos obrigatórios.";
           return;
         }
-        if (data.password.length < 8) {
+
+        if (String(data.password).length < 8) {
           if (signupError)
             signupError.textContent = "Password demasiado curta (mínimo 8).";
           return;
@@ -686,22 +722,22 @@
 
         try {
           const { data: signUpData, error } = await supabase.auth.signUp({
-            email: data.email,
-            password: data.password,
+            email: String(data.email).trim(),
+            password: String(data.password),
             options: {
               data: {
-                first_name: data.firstName,
-                last_name: data.lastName,
-                company: data.companyName,
-                business_area: data.industry,
+                first_name: data.first_name,
+                last_name: data.last_name,
+                company: data.company,
+                business_area: data.business_area,
                 phone: data.phone,
               },
+              emailRedirectTo: window.location.origin,
             },
           });
 
           if (error) throw error;
 
-          // Se confirm email estiver ligado, não há session e o email tem de chegar
           if (!signUpData?.session) {
             if (signupSuccess) {
               signupSuccess.textContent =
@@ -714,6 +750,8 @@
           if (signupSuccess)
             signupSuccess.textContent = "Conta criada e sessão iniciada.";
           signupForm.reset();
+          await refreshAuthUI();
+          // close();
         } catch (err) {
           if (signupError)
             signupError.textContent = friendlyAuthError(err?.message);
@@ -739,13 +777,15 @@
 
         try {
           const { error } = await supabase.auth.signInWithPassword({
-            email: data.email,
-            password: data.password,
+            email: String(data.email).trim(),
+            password: String(data.password),
           });
+
           if (error) throw error;
 
-          if (loginSuccess) loginSuccess.textContent = "Sessão iniciada.";
+          if (loginSuccess) loginSuccess.textContent = "Login feito ✅";
           loginForm.reset();
+          await refreshAuthUI();
           // close();
         } catch (err) {
           if (loginError)
@@ -772,8 +812,9 @@
 
         try {
           const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + "/reset.html",
+            redirectTo: window.location.origin,
           });
+
           if (error) throw error;
 
           if (loginSuccess)
@@ -785,5 +826,27 @@
         }
       });
     }
+
+    // LOGOUT (✅ tinhas botão no HTML mas não tinhas handler aqui)
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async () => {
+        clearMessages();
+        if (!needSupabase()) return;
+
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          if (loginError)
+            loginError.textContent = friendlyAuthError(error.message);
+          return;
+        }
+
+        if (loginSuccess) loginSuccess.textContent = "Logout feito ✅";
+        await refreshAuthUI();
+      });
+    }
+
+    // INIT + listener de mudanças de auth
+    refreshAuthUI();
+    supabase?.auth?.onAuthStateChange?.(() => refreshAuthUI());
   }
 })();

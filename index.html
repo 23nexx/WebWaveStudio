@@ -1,21 +1,20 @@
 <!doctype html>
-<html lang="pt-PT">
-  <head>
-    <meta charset="UTF-8" />
-    <title>WebWave Studio | Websites & Automação para Negócios Locais</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="WebWave Studio - criação de websites modernos e automação digital para negócios locais que querem crescer online."
-    />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebWave Studio | Websites & Automação para Negócios Locais</title>
+  <meta
+    name="description"
+    content="WebWave Studio - criação de websites modernos e automação digital para negócios locais que querem crescer online."
+  />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+</head>
 
   <body>
     <!-- NAVBAR -->
@@ -33,7 +32,7 @@
         <nav class="nav-links" id="nav-links">
           <a href="#servicos">Serviços</a>
           <a href="#portfolio">Portfólio</a>
-          <a href="#reviews">Reviews</a>
+          <a href="#reviews">Opiniões</a>
           <a href="#sobre">Sobre</a>
           <a href="#contacto">Contacto</a>
         </nav>
@@ -44,7 +43,6 @@
             Login
           </button>
 
-          <!-- ✅ só 1 toggle -->
           <button
             class="nav-toggle"
             id="nav-toggle"
@@ -57,7 +55,7 @@
       </div>
     </header>
 
-    <!-- ✅ AUTH MODAL (ÚNICO) -->
+    <!-- AUTH MODAL -->
     <div class="auth-modal" id="authModal" aria-hidden="true">
       <div class="auth-backdrop" data-auth-close="true"></div>
 
@@ -204,6 +202,7 @@
               <button class="auth-link" id="forgotBtn" type="button">
                 Esqueci-me da password
               </button>
+
               <button
                 class="auth-link"
                 id="logoutBtn"
@@ -233,7 +232,6 @@
 
     <!-- HERO -->
     <section class="hero">
-      <!-- Digital Rain -->
       <div class="hero-binarywave" aria-hidden="true">
         <div class="rain layer-1"></div>
         <div class="rain layer-2"></div>
@@ -274,7 +272,6 @@
         </div>
       </div>
 
-      <!-- Scroll hint -->
       <button
         class="scroll-hint"
         type="button"
@@ -428,7 +425,6 @@
         </p>
 
         <div class="grid-3 portfolio-grid" id="portfolio-grid">
-          <!-- Serviços -->
           <article class="card portfolio-card" data-category="servicos">
             <div class="portfolio-thumb">
               <video
@@ -464,7 +460,6 @@
             </div>
           </article>
 
-          <!-- SaaS -->
           <article class="card portfolio-card" data-category="saas">
             <div class="portfolio-thumb">
               <video
@@ -497,7 +492,6 @@
             </div>
           </article>
 
-          <!-- Ecommerce -->
           <article class="card portfolio-card" data-category="ecommerce">
             <div class="portfolio-thumb">
               <video
@@ -530,7 +524,6 @@
             </div>
           </article>
 
-          <!-- Restauração -->
           <article class="card portfolio-card" data-category="restauracao">
             <div class="portfolio-thumb">
               <video
@@ -563,7 +556,6 @@
             </div>
           </article>
 
-          <!-- Barbearia -->
           <article class="card portfolio-card" data-category="barbearia">
             <div class="portfolio-thumb">
               <video
@@ -597,7 +589,6 @@
             </div>
           </article>
 
-          <!-- Estética -->
           <article class="card portfolio-card" data-category="estetica">
             <div class="portfolio-thumb">
               <video
@@ -630,7 +621,6 @@
             </div>
           </article>
 
-          <!-- Alojamento -->
           <article class="card portfolio-card" data-category="alojamento">
             <div class="portfolio-thumb">
               <video
@@ -710,7 +700,7 @@
               <p>
                 <strong>Nuno Lima</strong>, fundador da
                 <strong>WebWave Studio</strong>. Desenvolvo websites e soluções
-                digitais com foco em performance, clareza e resultadosbr.
+                digitais com foco em performance, clareza e resultados.
               </p>
 
               <p>
@@ -850,7 +840,6 @@
 
         <div class="footer-col">
           <h4 class="footer-title">Contacte-nos</h4>
-
           <ul class="footer-contact">
             <li>
               <span class="icon" aria-hidden="true">
@@ -958,232 +947,10 @@
       </div>
     </div>
 
-    <!-- ✅ SUPABASE -->
+    <!-- Supabase CDN (tem de vir ANTES do script.js) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script>
-      // ✅ mete os teus dados aqui
-      const SUPABASE_URL = "https://bvigpzldqobufsrrwryh.supabase.co";
-      const SUPABASE_ANON_KEY =
-        "sb_publishable_6_hrgiqYPf1ctfnyAYM5Iw_XJmEZld7";
-      const supabase = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY,
-      );
-
-      const $ = (s) => document.querySelector(s);
-      const $$ = (s) => document.querySelectorAll(s);
-
-      const authModal = $("#authModal");
-      const openAuthBtn = $("#openAuth");
-
-      const signupForm = $("#signupForm");
-      const loginForm = $("#loginForm");
-
-      const signupError = $("#signupError");
-      const signupSuccess = $("#signupSuccess");
-      const loginError = $("#loginError");
-      const loginSuccess = $("#loginSuccess");
-
-      const forgotBtn = $("#forgotBtn");
-      const logoutBtn = $("#logoutBtn");
-
-      function openModal() {
-        authModal.classList.add("is-open");
-        authModal.setAttribute("aria-hidden", "false");
-      }
-
-      function closeModal() {
-        authModal.classList.remove("is-open");
-        authModal.setAttribute("aria-hidden", "true");
-      }
-
-      function clearMsgs() {
-        signupError.textContent = "";
-        signupSuccess.textContent = "";
-        loginError.textContent = "";
-        loginSuccess.textContent = "";
-      }
-
-      function setTab(tab) {
-        $$(".auth-tab").forEach((btn) => {
-          const active = btn.dataset.authTab === tab;
-          btn.classList.toggle("is-active", active);
-          btn.setAttribute("aria-selected", String(active));
-        });
-
-        $$(".auth-panel").forEach((panel) => {
-          panel.hidden = panel.dataset.authPanel !== tab;
-        });
-
-        clearMsgs();
-      }
-
-      function getFormData(form) {
-        const fd = new FormData(form);
-        return Object.fromEntries(fd.entries());
-      }
-
-      // open modal
-      openAuthBtn.addEventListener("click", () => openModal());
-
-      // close modal (backdrop + X)
-      document.addEventListener("click", (e) => {
-        const t = e.target;
-        if (t?.dataset?.authClose === "true") closeModal();
-      });
-
-      // tabs
-      $$(".auth-tab").forEach((btn) => {
-        btn.addEventListener("click", () => setTab(btn.dataset.authTab));
-      });
-
-      async function refreshAuthUI() {
-        const { data } = await supabase.auth.getSession();
-        const session = data.session;
-
-        if (session) {
-          logoutBtn.style.display = "inline";
-          openAuthBtn.textContent = "Conta";
-        } else {
-          logoutBtn.style.display = "none";
-          openAuthBtn.textContent = "Login";
-        }
-      }
-
-      async function upsertProfileIfPossible(userId, v) {
-        // Só funciona se houver sessão (se confirm email estiver ON e session for null, não dá).
-        const { error } = await supabase.from("profiles").upsert({
-          id: userId,
-          first_name: v.first_name,
-          last_name: v.last_name,
-          company: v.company,
-          business_area: v.business_area,
-          phone: v.phone,
-          email: v.email,
-        });
-
-        if (error) {
-          // não explodas por isto, só informa
-          console.warn(
-            "Profile upsert falhou (normal se não houver sessão ainda):",
-            error.message,
-          );
-        }
-      }
-
-      // SIGNUP
-      signupForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        clearMsgs();
-
-        const v = getFormData(signupForm);
-
-        try {
-          const { data, error } = await supabase.auth.signUp({
-            email: v.email,
-            password: v.password,
-            options: {
-              data: {
-                first_name: v.first_name,
-                last_name: v.last_name,
-                company: v.company,
-                business_area: v.business_area,
-                phone: v.phone,
-              },
-            },
-          });
-
-          if (error) throw error;
-
-          if (!data.session) {
-            signupSuccess.textContent =
-              "Conta criada. Confirma o email para poder entrar.";
-            signupForm.reset();
-            return;
-          }
-
-          await upsertProfileIfPossible(data.user.id, v);
-
-          signupSuccess.textContent = "Conta criada. A entrar...";
-          signupForm.reset();
-
-          // opcional: manda para dashboard
-          // window.location.href = "cliente.html";
-        } catch (err) {
-          signupError.textContent = err?.message || "Erro ao criar conta.";
-        }
-      });
-
-      // LOGIN
-      loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        clearMsgs();
-
-        const v = getFormData(loginForm);
-
-        try {
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email: v.email,
-            password: v.password,
-          });
-
-          if (error) throw error;
-
-          loginSuccess.textContent = "Login feito";
-          await refreshAuthUI();
-
-          // opcional: manda para dashboard
-          // window.location.href = "cliente.html";
-        } catch (err) {
-          loginError.textContent = err?.message || "Erro no login.";
-        }
-      });
-
-      // RESET
-      forgotBtn.addEventListener("click", async () => {
-        clearMsgs();
-        const email = loginForm
-          .querySelector('input[name="email"]')
-          .value.trim();
-
-        if (!email) {
-          loginError.textContent = "Mete o email primeiro.";
-          return;
-        }
-
-        try {
-          const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin,
-          });
-          if (error) throw error;
-
-          loginSuccess.textContent = "Email enviado para reset da password.";
-        } catch (err) {
-          loginError.textContent = err?.message || "Erro ao enviar reset.";
-        }
-      });
-
-      // LOGOUT
-      logoutBtn.addEventListener("click", async () => {
-        clearMsgs();
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-          loginError.textContent = error.message;
-          return;
-        }
-        loginSuccess.textContent = "Logout feito ✅";
-        await refreshAuthUI();
-      });
-
-      // INIT
-      document.addEventListener("DOMContentLoaded", async () => {
-        setTab("signup");
-        await refreshAuthUI();
-      });
-    </script>
-
-    <!-- o teu JS normal -->
-    <script src="script.js"></script>
+    <!-- teu JS (com auth lá dentro) -->
+    <script src="script.js?v=2"></script>
   </body>
 </html>
