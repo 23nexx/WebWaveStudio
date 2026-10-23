@@ -47,7 +47,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=4" />
 
   <!-- Fonts / CSS -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=6" />/>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -80,6 +80,29 @@
         </nav>
 
         <div class="nav-actions">
+          
+<label class="lang-picker" aria-label="Selecionar idioma / Select language">
+  <svg
+    aria-hidden="true"
+    width="17"
+    height="17"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+  </svg>
+
+  <select id="language-select" aria-label="Idioma / Language">
+    <option value="pt">PT</option>
+    <option value="en">EN</option>
+  </select>
+</label>
+
           <a href="#contacto" class="btn btn-small nav-cta">Fala connosco</a>
           <button class="btn btn-small btn-ghost" id="openAuth" type="button">
             Login
@@ -989,11 +1012,17 @@
       </div>
     </div>
 
-    <!-- Supabase CDN (tem de vir ANTES do script.js) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+   <!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- teu JS (com auth lá dentro) -->
-    <link rel="stylesheet" href="style.css?v=4" />
-<script src="script.js?v=4"></script>
+<!-- Traduções PT/EN -->
+<script src="i18n.js?v=5" defer></script>
+
+<!-- JavaScript principal -->
+<script src="script.js?v=5" defer></script>
+
+</body>
+</html>
+
   </body>
 </html>
